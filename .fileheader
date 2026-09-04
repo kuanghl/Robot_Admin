@@ -1,0 +1,24 @@
+
+module.exports = {
+  "customMade": {
+    "Author": "git config user.name && git config user.email",
+    "Date": "Do not edit",
+    "LastEditors": "git config user.name && git config user.email",
+    "LastEditTime": "Do not edit",
+    "FilePath": "Do not edit",
+    "Description": "",
+    "custom_string_obkoro1_copyright": "Copyright (c) ${now_year} by CHENY, All Rights Reserved 😎.",
+    "param": "",
+    "return": "",
+  },
+  "configObj": {
+    "prohibitAutoAdd": ["json", "md"], // 禁止.json .md文件，自动添加头部注释
+    // 某些文件夹或文件禁止添加自动注释
+    "folderBlacklist": [
+      "node_modules",
+      "bun.lock"
+    ]
+  }
+}
+
+

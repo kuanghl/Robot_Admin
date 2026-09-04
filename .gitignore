@@ -1,0 +1,60 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+.DS_Store
+dist
+dist-ssr
+coverage
+*.local
+
+/cypress/videos/
+/cypress/screenshots/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/mcp.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+*.tsbuildinfo
+
+system_path.txt
+project_path.txt
+
+.git/*.lock
+
+.env
+
+.temp-tsconfig.json
+
+type-reports
+
+# 自动生成的类型声明文件
+src/types/auto-imports.d.ts
+src/types/components.d.ts
+
+# openapi.json
+# src/api/generated/
+
+
+.mgit-push.json
+# Monorepo 目录（仅在 monorepo 分支使用）
+packages/
+apps/robot-admin-*/
+nul
+
+# Design documentation (external references)
+design-md
+
