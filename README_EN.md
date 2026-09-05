@@ -5,11 +5,11 @@
       <img src="https://cheny-chenyu.oss-cn-chengdu.aliyuncs.com/img/robot-left.png" height="120" />
     </picture>
   </a>
-  
+
   <h1>
     <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=32&duration=3000&pause=1000&color=4FC08D&background=FFFFFF00&center=true&vCenter=true&multiline=true&width=700&height=100&lines=🤖+Robot+Admin;Redefining+Enterprise+Admin+Development" alt="Robot Admin" />
   </h1>
-  
+
   <p><strong>Robot Admin - Multi-Architecture Enterprise Solution</strong></p>
 
   <!-- Architecture Selector -->
@@ -223,9 +223,9 @@ To connect a backend, set `VITE_AUTH_MODE=remote` and configure the endpoint thr
 
 **🎭 Frontend Core**
 
-- **Vue 3.5.13** - 🔥 Latest stable version, silky Composition API experience
-- **TypeScript 5.8** - 🛡️ Type safety, intelligent hints
-- **Naive UI 2.41.0** - 🎨 Component library with both beauty and performance
+- **Vue 3.5.42** - 🔥 Latest stable version, silky Composition API experience
+- **TypeScript 5.8.3** - 🛡️ Type safety, intelligent hints
+- **Naive UI 2.45.3** - 🎨 Component library with both beauty and performance
 - **@robot-admin/naive-ui-components** - 🧩 51+ business components, auto-import on demand
 - **UnoCSS 66.3.3** - ⚡ Atomic CSS, on-demand generation, minimal size
 
@@ -248,6 +248,7 @@ To connect a backend, set `VITE_AUTH_MODE=remote` and configure the endpoint thr
 - **AntV X6** - Professional flowchart engine
 - **FullCalendar** - Complete calendar management
 - **WangEditor** - Rich text editor
+
 </details>
 
 ### 🎯 Feature Matrix
@@ -326,6 +327,7 @@ To connect a backend, set `VITE_AUTH_MODE=remote` and configure the endpoint thr
 - `C_ContextMenu` - Custom right-click context menu
 - `C_Transfer` - Shuttle box for cross-list data migration
 - `C_AvatarGroup` - Stacked avatar group with status badges
+
 </details>
 
 #### 🎮 Custom Directives
@@ -377,6 +379,7 @@ To connect a backend, set `VITE_AUTH_MODE=remote` and configure the endpoint thr
 - Transfer - Cross-list data migration shuttle box
 - Avatar Group - Stacked avatar display with status badges
 - Audio Player - Playlist, progress control & multi-loop modes
+
 </details>
 
 ---
@@ -511,6 +514,7 @@ graph LR
 - `desc:` For quick console print statement generation
 - `use:` Select variable, press shortcut to generate print statement
 - `key:` `ctrl+alt+l` generate `alt+shift+c` comment all **+u** enable all **+d** delete all
+
 </details>
 
 ---
@@ -601,6 +605,7 @@ graph LR
 - **Component Lazy Loading** - Route-level lazy loading
 - **Image Lazy Loading** - Viewport-based image loading
 - **Debounce & Throttle** - High-frequency operation performance optimization
+
 </details>
 
 ---
@@ -714,14 +719,15 @@ location / {
 <details>
 <summary><b>✅ Completed Milestones</b></summary>
 
-| Version | Date       | Highlights                                                    |
-| ------- | ---------- | ------------------------------------------------------------- |
-| v1.0.0  | 2025-11    | First release, Vue 3 + Naive UI core architecture             |
-| v1.13.0 | 2026-01    | 45+ components, 11 directives, 7 packages                     |
-| v1.14.0 | 2026-02    | Monorepo + Micro-frontend dual architecture, Bun migration    |
-| v2.0.0  | 2026-03-01 | **Breaking** - Single-app restructure, Vite 8, 51+ components |
-| v2.1.0  | 2026-03-06 | SaaS extension, multi-app scaffold                            |
-| v2.2.0  | 2026-03-11 | Layout v2.2.0, env-manager v1.0.5, Robot CLI ✅               |
+| Version | Date       | Highlights                                                          |
+| ------- | ---------- | ------------------------------------------------------------------- |
+| v1.0.0  | 2025-11    | First release, Vue 3 + Naive UI core architecture                   |
+| v1.13.0 | 2026-01    | 45+ components, 11 directives, 7 packages                           |
+| v1.14.0 | 2026-02    | Monorepo + Micro-frontend dual architecture, Bun migration          |
+| v2.0.0  | 2026-03-01 | **Breaking** - Single-app restructure, Vite 8, 51+ components       |
+| v2.1.0  | 2026-03-06 | SaaS extension, multi-app scaffold                                  |
+| v2.2.0  | 2026-03-11 | Layout v2.2.0, env-manager v1.0.5, Robot CLI ✅                     |
+| v2.5.0  | 2026-09-04 | Full dependency upgrade: Vue 3.5.42, Vite 8.2.2, components v0.11.6 |
 
 </details>
 
@@ -771,11 +777,12 @@ location / {
 
 **Published Plugins**
 
-- **[vite-console-plugin](https://www.npmjs.com/package/vite-console-plugin)** `v2.0.15` - Vite console beautification plugin
-- **[ts-type-cleaner](https://www.npmjs.com/package/ts-type-cleaner)** `v5.0.8` - TypeScript type analysis & cleanup tool
-- **[robot-admin-env-manager](https://www.npmjs.com/package/robot-admin-env-manager)** `v1.0.5` - Multi-env configuration manager
+- **[vite-console-plugin](https://www.npmjs.com/package/vite-console-plugin)** `v2.0.16` - Vite console beautification plugin
+- **[ts-type-cleaner](https://www.npmjs.com/package/ts-type-cleaner)** `v5.1.0` - TypeScript type analysis & cleanup tool
+- **[robot-admin-env-manager](https://www.npmjs.com/package/robot-admin-env-manager)** `v1.1.0` - Multi-env configuration manager
 - **[vite-plugin-preloader](https://www.npmjs.com/package/vite-plugin-preloader)** `v2.0.1` - Smart route preloader
-- **[git-branch-check-diff-commits](https://www.npmjs.com/package/git-branch-check-diff-commits)** `v1.2.2` - Branch diff checker
+- **[git-branch-check-diff-commits](https://www.npmjs.com/package/git-branch-check-diff-commits)** `v1.3.0` - Branch diff checker
+
 </details>
 
 ---
@@ -833,6 +840,7 @@ location / {
 - **VS Code**: Recommended editor
 - **Git**: >= 2.20.0
 - **Docker**: >= 20.0 (Container deployment)
+
 </details>
 
 ---
@@ -935,6 +943,7 @@ bun run type-build
 - 🧩 **Rich Components**: 37+ business components, ready to use
 - 🎨 **Modern Design**: Naive UI + UnoCSS, beauty and performance coexist
 - 📚 **Learning Friendly**: 36+ demo pages, each is best practice
+
 </details>
 
 ---
@@ -973,6 +982,7 @@ bun run type-build
 - Provide detailed migration guide
 - Component APIs are basically compatible
 - Support progressive migration
+
 </details>
 
 ---

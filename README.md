@@ -5,11 +5,11 @@
       <img src="https://cheny-chenyu.oss-cn-chengdu.aliyuncs.com/img/robot-left.png" height="120" />
     </picture>
   </a>
-  
+
   <h1>
     <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=32&duration=3000&pause=1000&color=4FC08D&background=FFFFFF00&center=true&vCenter=true&multiline=true&width=600&height=100&lines=🤖+Robot+Admin;重新定义企业级中后台开发体验" alt="Robot Admin" />
   </h1>
-  
+
   <p><strong>Robot Admin - 多架构企业级解决方案</strong></p>
 
   <!-- 架构选择器 -->
@@ -62,7 +62,7 @@
   <p>
     <img src="https://img.shields.io/badge/bun-%E2%89%A51.3.x-ff1e56?style=flat&logo=bun" alt="Bun Version">
     <img src="https://img.shields.io/badge/vue-3.5.13-4FC08D?style=flat&logo=vue.js" alt="Vue Version">
-    <img src="https://img.shields.io/badge/typescript-5.8.0-blue?style=flat&logo=typescript" alt="TypeScript Version">
+    <img src="https://img.shields.io/badge/typescript-5.8.3-blue?style=flat&logo=typescript" alt="TypeScript Version">
     <img src="https://img.shields.io/badge/vite-8.0.3-646CFF?style=flat&logo=vite" alt="Vite Version">
     <a href="https://vercel.com"><img src="https://img.shields.io/github/deployments/ChenyCHENYU/robot_admin/production?label=vercel&logo=vercel" alt="Vercel"></a>
     <a href="https://standardjs.com"><img src="https://img.shields.io/badge/code_style-standard-brightgreen" alt="Code Style"></a>
@@ -224,9 +224,9 @@ bun run commit         # 规范化提交（git cz）
 
 **🎭 前端核心**
 
-- **Vue 3.5.13** - 🔥 最新稳定版，Composition API 丝滑体验
-- **TypeScript 5.8** - 🛡️ 类型安全，智能提示
-- **Naive UI 2.41.0** - 🎨 颜值与性能并存的组件库
+- **Vue 3.5.42** - 🔥 最新稳定版，Composition API 丝滑体验
+- **TypeScript 5.8.3** - 🛡️ 类型安全，智能提示
+- **Naive UI 2.45.3** - 🎨 颜值与性能并存的组件库
 - **@robot-admin/naive-ui-components** - 🧩 51+ 业务组件库，按需自动导入
 - **UnoCSS 66.3.3** - ⚡ 原子化CSS，按需生成，体积极小
 
@@ -251,6 +251,7 @@ bun run commit         # 规范化提交（git cz）
 - **WangEditor** - 富文本编辑器
 - **XGPlayer** - 视频播放器（HLS/防作弊）
 - **Vue Flow** - 工作流编辑器
+
 </details>
 
 ### 🎯 功能矩阵
@@ -327,6 +328,7 @@ bun run commit         # 规范化提交（git cz）
 - `C_ContextMenu` - 右键上下文菜单
 - `C_Transfer` - 穿梭框，跨列表数据迁移
 - `C_AvatarGroup` - 叠加头像组，状态徽标
+
 </details>
 
 #### 🎮 自定义指令
@@ -378,6 +380,7 @@ bun run commit         # 规范化提交（git cz）
 - 穿梭框 - 跨列表数据迁移
 - 头像组 - 叠加头像展示，状态徽标
 - 音频播放器 - 播放列表、进度控制、多循环模式
+
 </details>
 
 ---
@@ -513,6 +516,7 @@ graph LR
 - `desc：` 用于快速生成 console 打印信息
 - `use：` 通过选中变量，按下快捷键，生成打印句柄
 - `key：` `ctrl+alt+l` 生成 `alt+shift+c` 注释所有 **+u** 启用所有 **+d** 删除所有
+
 </details>
 
 ---
@@ -607,6 +611,7 @@ graph LR
 - **组件懒加载** - 路由级别懒加载
 - **图片懒加载** - 视口内图片按需加载
 - **防抖节流** - 高频操作性能优化
+
 </details>
 
 ---
@@ -720,20 +725,21 @@ location / {
 ### ✅ 已完成里程碑
 
 <details>
-<summary><b>查看完整版本历程 (v1.0 → v2.2)</b></summary>
+<summary><b>查看完整版本历程 (v1.0 → v2.5)</b></summary>
 
-| 版本   | 时间    | 主要更新                                             |
-| ------ | ------- | ---------------------------------------------------- |
-| v1.0   | 2025-07 | 🎉 项目初版：Vue3 + Vite + Naive UI + Pinia 基础架构 |
-| v1.6   | 2025-10 | 🎨 主题系统 + UnoCSS + 演示页面体系                  |
-| v1.11  | 2025-12 | 🧩 组件库雏形 + i18n 国际化 + 性能优化               |
-| v1.12  | 2026-02 | 📦 `@robot-admin/request-core` 独立发布              |
-| v1.13  | 2026-02 | 🔧 Composable 架构重构，各 npm 包逐步独立发布        |
-| v1.14  | 2026-02 | ✨ 新增 10 个组件（签名/裁剪/Cron/瀑布流等）         |
-| v2.0   | 2026-03 | 🏗️ **架构重构**：39 个组件迁移至独立 npm 包，零冗余  |
-| v2.1   | 2026-03 | 🔐 Token 无感刷新 + 权限体系升级 + 可插拔登录组件    |
-| v2.2   | 2026-03 | 🎭 菜单双主题 + Vite 8 升级 + 全量 TypeScript 通过   |
-| v2.2.1 | 2026-03 | 🔧 Vite 8.0.3 正式升级 + 样式细节优化                |
+| 版本   | 时间    | 主要更新                                                  |
+| ------ | ------- | --------------------------------------------------------- |
+| v1.0   | 2025-07 | 🎉 项目初版：Vue3 + Vite + Naive UI + Pinia 基础架构      |
+| v1.6   | 2025-10 | 🎨 主题系统 + UnoCSS + 演示页面体系                       |
+| v1.11  | 2025-12 | 🧩 组件库雏形 + i18n 国际化 + 性能优化                    |
+| v1.12  | 2026-02 | 📦 `@robot-admin/request-core` 独立发布                   |
+| v1.13  | 2026-02 | 🔧 Composable 架构重构，各 npm 包逐步独立发布             |
+| v1.14  | 2026-02 | ✨ 新增 10 个组件（签名/裁剪/Cron/瀑布流等）              |
+| v2.0   | 2026-03 | 🏗️ **架构重构**：39 个组件迁移至独立 npm 包，零冗余       |
+| v2.1   | 2026-03 | 🔐 Token 无感刷新 + 权限体系升级 + 可插拔登录组件         |
+| v2.2   | 2026-03 | 🎭 菜单双主题 + Vite 8 升级 + 全量 TypeScript 通过        |
+| v2.2.1 | 2026-03 | 🔧 Vite 8.0.3 正式升级 + 样式细节优化                     |
+| v2.5   | 2026-09 | 🚀 全量依赖升级：Vue 3.5.42 / Vite 8.2.2 / 组件库 v0.11.6 |
 
 </details>
 
@@ -762,12 +768,12 @@ location / {
 
 **已发布组件库**
 
-- **[@robot-admin/naive-ui-components](https://www.npmjs.com/package/@robot-admin/naive-ui-components)** `v0.10.3` - 基于 Naive UI 的 Vue 3 业务组件库（51+ 组件，按需导入）
+- **[@robot-admin/naive-ui-components](https://www.npmjs.com/package/@robot-admin/naive-ui-components)** `v0.11.6` - 基于 Naive UI 的 Vue 3 业务组件库（51+ 组件，按需导入）
 - **[@robot-admin/layout](https://www.npmjs.com/package/@robot-admin/layout)** `v2.3.2` - 6 种布局模式 + 安全设置管理 + 无障碍交互
 - **[@robot-admin/request-core](https://www.npmjs.com/package/@robot-admin/request-core)** `v0.2.0` - Axios 请求编排 + 6 类插件能力 + useTableCrud
-- **[@robot-admin/form-validate](https://www.npmjs.com/package/@robot-admin/form-validate)** `v2.0.0` - 48+ 企业级表单验证规则库
-- **[@robot-admin/directives](https://www.npmjs.com/package/@robot-admin/directives)** `v1.1.1` - 11 个安全、可回收的 Vue 指令
-- **[@robot-admin/file-utils](https://www.npmjs.com/package/@robot-admin/file-utils)** `v2.0.0` - Excel/ZIP/RFC 4180 CSV/可取消分片工具集
+- **[@robot-admin/form-validate](https://www.npmjs.com/package/@robot-admin/form-validate)** `v3.4.2` - 48+ 企业级表单验证规则库
+- **[@robot-admin/directives](https://www.npmjs.com/package/@robot-admin/directives)** `v2.0.1` - 11 个安全、可回收的 Vue 指令
+- **[@robot-admin/file-utils](https://www.npmjs.com/package/@robot-admin/file-utils)** `v3.0.1` - Excel/ZIP/RFC 4180 CSV/可取消分片工具集
 - **[@robot-admin/theme](https://www.npmjs.com/package/@robot-admin/theme)** `v0.4.0` - 主题切换、安全持久化与设计风格系统
 - **[@robot-admin/git-standards](https://www.npmjs.com/package/@robot-admin/git-standards)** `v1.0.4` - 幂等初始化与配置备份的 Git 工程化标准
 
@@ -779,17 +785,18 @@ location / {
 
 **已发布 npm 插件**
 
-- **[vite-console-plugin](https://www.npmjs.com/package/vite-console-plugin)** `v2.0.15` - Vite 启动台控制台美化与提示插件
-- **[ts-type-cleaner](https://www.npmjs.com/package/ts-type-cleaner)** `v5.0.8` - 智能 TypeScript 类型分析和清理工具
+- **[vite-console-plugin](https://www.npmjs.com/package/vite-console-plugin)** `v2.0.16` - Vite 启动台控制台美化与提示插件
+- **[ts-type-cleaner](https://www.npmjs.com/package/ts-type-cleaner)** `v5.1.0` - 智能 TypeScript 类型分析和清理工具
 - **[vite-plugin-preloader](https://www.npmjs.com/package/vite-plugin-preloader)** `v2.0.1` - 智能路由预加载插件
-- **[robot-admin-env-manager](https://www.npmjs.com/package/robot-admin-env-manager)** `v1.0.5` - Robot Admin 环境配置管理工具
-- **[git-branch-check-diff-commits](https://www.npmjs.com/package/git-branch-check-diff-commits)** `v1.2.2` - Git 分支快速比对合并检查
+- **[robot-admin-env-manager](https://www.npmjs.com/package/robot-admin-env-manager)** `v1.1.0` - Robot Admin 环境配置管理工具
+- **[git-branch-check-diff-commits](https://www.npmjs.com/package/git-branch-check-diff-commits)** `v1.3.0` - Git 分支快速比对合并检查
 - **[git-log-formatter](https://www.npmjs.com/package/git-log-formatter)** `v1.0.2` - Git log 格式化美化工具
 - **[standards-cli](https://www.npmjs.com/package/standards-cli)** `v1.0.13` - 前端工程化提交规范初始化工具
 - **[mgit-push](https://www.npmjs.com/package/mgit-push)** `v1.0.5` - 同时推送到多个 Git 平台
 - **[@agile-team/robot-cli](https://www.npmjs.com/package/@agile-team/robot-cli)** `v1.1.12` - 现代化项目脚手架工具
 - **[@agile-team/naive-ui-components](https://www.npmjs.com/package/@agile-team/naive-ui-components)** `v0.1.4` - Naive UI 组件库（旧版，已迁移至 @robot-admin）
 - **[@agile-team/vscode-config](https://www.npmjs.com/package/@agile-team/vscode-config)** `v2.0.8` - 团随 VSCode 配置一键安装工具
+
 </details>
 
 ---
@@ -847,6 +854,7 @@ location / {
 - **VS Code**: 推荐编辑器
 - **Git**: >= 2.20.0
 - **Docker**: >= 20.0 (容器部署)
+
 </details>
 
 ---
@@ -949,6 +957,7 @@ bun run type-build
 - 🧩 **组件丰富**: 51+ 业务组件，独立组件库按需导入
 - 🎨 **设计现代**: Naive UI + UnoCSS，颜值与性能并存
 - 📚 **学习友好**: 54+ 演示页面，每个都是最佳实践
+
 </details>
 
 ---
@@ -987,6 +996,7 @@ bun run type-build
 - 提供详细的迁移指南
 - 组件API基本兼容
 - 渐进式迁移支持
+
 </details>
 
 ---
@@ -1066,7 +1076,14 @@ bun run type-build
 
 ## 📄 更新日志
 
-### 🚀 v2.2.1 (2026-03-27) — 最新版本
+### 🚀 v2.5.0 (2026-09-04) — 最新版本
+
+- 🚀 **全量依赖升级**：Vue 3.5.42 / Vite 8.2.2 / Rolldown 1.2.7 / TypeScript 5.8.3
+- 📦 **生态组件库升级**：`@robot-admin/naive-ui-components@0.11.6`（C_Form / C_Table 强类型与样式分包）、`form-validate@3.4.2`（批量校验）、`directives@2.0.1`、`file-utils@3.0.1`
+- 🧰 **开发工具链升级**：ESLint 10.9 / oxlint 1.81 / vue-tsc 3.3 / UnoCSS 66.10 / Naive UI 2.45.3
+- ✅ `bun run verify` 全链路验证通过（只读 Lint + 类型检查 + 单元测试 + 生产构建）
+
+### 🚀 v2.2.1 (2026-03-27)
 
 - 🔧 **Vite 8.0.3 + Rolldown**：升级至 Vite 最新版，构建引擎持续优化
 - 🎨 **样式细节优化**：NCard 全局间距优化，暗色主题细节全面提升

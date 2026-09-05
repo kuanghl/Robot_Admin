@@ -13,7 +13,12 @@ import { initDynamicRouter, type DynamicRoute } from '@/router/dynamicRouter'
 import { s_permissionStore } from '@/stores/permission'
 import { message } from '@/plugins/discrete'
 import { setupNProgress } from '@/plugins/nprogress'
-import type { RouteLocationNormalized } from 'vue-router'
+import {
+  NavigationFailureType,
+  isNavigationFailure,
+  type NavigationFailure,
+  type RouteLocationNormalized,
+} from 'vue-router'
 const nprogress = setupNProgress()
 const WHITE_LIST = ['/login', '/404', '/401']
 const LOGIN_PATH = '/login'
@@ -201,7 +206,20 @@ router.afterEach((to, from, failure) => {
   // afterEach 在异步路由组件解析完成后触发，进度条覆盖真实页面加载周期
   nprogress.done()
 
-  if (import.meta.env.DEV && failure) {
-    console.error('❌ 路由跳转失败:', failure.message)
+  if (!failure) {
+    return
+  }
+
+  // 重复导航（已在当前路由时再次跳转到同一位置）属于预期内的无害操作，不视为错误
+  const isDuplicated = isNavigationFailure(
+    failure,
+    NavigationFailureType.duplicated
+  )
+  if (isDuplicated) {
+    return
+  }
+
+  if (import.meta.env.DEV) {
+    console.error('❌ 路由跳转失败:', (failure as NavigationFailure).message)
   }
 })

@@ -16,6 +16,7 @@
 
     "module": "ESNext", // 使用最新的 ES 模块语法
     "moduleResolution": "Bundler", // 使用打包工具的模块解析策略
+    "allowImportingTsExtensions": true, // 原生 configLoader 要求显式 .ts 扩展名
     "types": ["node"] // 包含 Node.js 类型定义
   }
 }

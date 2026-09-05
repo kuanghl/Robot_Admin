@@ -8,6 +8,8 @@
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
  */
 
+import { existsSync, readdirSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { defineConfig, type PluginOption, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
@@ -18,6 +20,7 @@ import preloader from 'vite-plugin-preloader'
 
 import {
   viteConsolePlugin,
+  vendorStyleCssFixPlugin,
   viteAutoImportPlugin,
   viteComponentsPlugin,
   resolveConfig,
@@ -25,8 +28,33 @@ import {
   buildConfig,
   createI18nPlugin,
   createVuePluginOptions,
-} from './src/config/vite'
-import { HEAVY_PAGE_ROUTES } from './src/config/heavyPages'
+} from './src/config/vite/index.ts'
+import { HEAVY_PAGE_ROUTES } from './src/config/heavyPages.ts'
+
+
+/**
+ * 组件库全部 C_* 子路径导出（从 dist 扫描，随包版本自动更新）。
+ * Vite 8 的依赖扫描不跟随 dynamicRouter 的 import.meta.glob 懒路由，
+ * 进入演示页才会运行时发现这些依赖 → 触发整页 reload → 打断 SPA 导航。
+ * 启动时全部预构建可消除该问题（本地源码模式走 alias，跳过）。
+ */
+const cComponentDeps = (() => {
+  if (
+    process.env.USE_LOCAL_COMPONENTS === 'true' ||
+    process.env.USE_LOCAL_PACKAGES === 'true'
+  )
+    return []
+  const dist = fileURLToPath(
+    new URL(
+      './node_modules/@robot-admin/naive-ui-components/dist',
+      import.meta.url
+    )
+  )
+  if (!existsSync(dist)) return []
+  return readdirSync(dist)
+    .filter(f => /^C_.*\.js$/.test(f))
+    .map(f => `@robot-admin/naive-ui-components/${f.replace(/\.js$/, '')}`)
+})()
 
 export default defineConfig(async ({ mode, command }: { mode: string; command: string }) => {
   const env = loadEnv(mode, process.cwd(), '')
@@ -34,6 +62,7 @@ export default defineConfig(async ({ mode, command }: { mode: string; command: s
 
   return {
     plugins: [
+      vendorStyleCssFixPlugin(),
       viteConsolePlugin,
       Unocss(),
       vue(createVuePluginOptions()),
@@ -72,7 +101,7 @@ export default defineConfig(async ({ mode, command }: { mode: string; command: s
         'naive-ui',
         ...(process.env.USE_LOCAL_COMPONENTS === 'true'
           ? []
-          : ['@robot-admin/naive-ui-components']),
+          : ['@robot-admin/naive-ui-components', ...cComponentDeps]),
         'vue-router',
         'pinia',
         '@vueuse/core',

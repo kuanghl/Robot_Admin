@@ -203,7 +203,7 @@
           pagination: false,
           display: { scrollX: 400 },
         },
-      }),
+      } as Parameters<typeof C_Table>[0]),
     ])
   }
 </script>

@@ -144,7 +144,7 @@ export const projectMetrics = [
 export const ecosystemPackages = [
   {
     shortName: 'naive-ui-components',
-    version: '0.10.3',
+    version: '0.11.6',
     icon: 'mdi:puzzle-outline',
     color: '#6366f1',
     desc: '51+ 业务组件，按需导入，主题覆盖',
@@ -176,7 +176,7 @@ export const ecosystemPackages = [
   },
   {
     shortName: 'directives',
-    version: '1.1.1',
+    version: '2.0.1',
     icon: 'mdi:code-tags',
     color: '#8b5cf6',
     desc: '11 个 Vue 指令：copy / watermark 等',
@@ -184,7 +184,7 @@ export const ecosystemPackages = [
   },
   {
     shortName: 'form-validate',
-    version: '2.0.0',
+    version: '3.4.2',
     icon: 'mdi:check-decagram-outline',
     color: '#ef4444',
     desc: '48+ 验证规则，中国本地化，Naive UI 适配',
@@ -192,7 +192,7 @@ export const ecosystemPackages = [
   },
   {
     shortName: 'file-utils',
-    version: '2.0.0',
+    version: '3.0.1',
     icon: 'mdi:file-multiple-outline',
     color: '#06b6d4',
     desc: 'Excel / ZIP / 分片上传，20+ 格式',

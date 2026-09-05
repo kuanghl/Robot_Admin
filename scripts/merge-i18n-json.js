@@ -11,7 +11,7 @@
  * 4. 不会重新生成翻译，节省 API 配额
  */
 
-const fs = require('fs');
+import fs from 'node:fs';
 
 // 颜色输出
 const colors = {

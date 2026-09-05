@@ -189,7 +189,7 @@
     debouncedHandleFieldsChange(fields)
   }
 
-  const handleFormDataUpdate = (data: EmployeeFormData): void => {
+  const handleFormDataUpdate = (data: Record<string, unknown>): void => {
     Object.assign(formData.value, data)
   }
 
@@ -218,7 +218,7 @@
     ) {
       const formModel = formRef.value.getModel()
       if (formModel && Object.keys(formModel).length > 0) {
-        return formModel
+        return formModel as unknown as EmployeeFormData
       }
     }
     return formData.value

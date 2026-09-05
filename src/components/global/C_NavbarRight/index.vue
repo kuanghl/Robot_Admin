@@ -323,11 +323,13 @@
           key: item.key as string,
           label: item.label as string,
           icon: item.icon,
-          children: item.children,
+          children: item.children?.length
+            ? flattenMenuItems(item.children as MenuOption[])
+            : undefined,
         })
       }
       if (item.children?.length) {
-        result.push(...flattenMenuItems(item.children))
+        result.push(...flattenMenuItems(item.children as MenuOption[]))
       }
     }
     return result

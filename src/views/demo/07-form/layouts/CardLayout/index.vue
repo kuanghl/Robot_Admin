@@ -44,18 +44,15 @@
           <pre
             v-if="tab.name === 'formData'"
             class="debug-code"
-            >{{ JSON.stringify(formData, null, 2) }}</pre
-          >
+            >{{ JSON.stringify(formData, null, 2) }}</pre>
           <pre
             v-else-if="tab.name === 'options'"
             class="debug-code"
-            >{{ JSON.stringify(formOptions, null, 2) }}</pre
-          >
+            >{{ JSON.stringify(formOptions, null, 2) }}</pre>
           <pre
             v-else-if="tab.name === 'layoutConfig'"
             class="debug-code"
-            >{{ JSON.stringify(cardLayoutConfig, null, 2) }}</pre
-          >
+            >{{ JSON.stringify(cardLayoutConfig, null, 2) }}</pre>
         </NTabPane>
       </NTabs>
     </NCard>
@@ -101,7 +98,7 @@
   const formData = defineModel<FormModel>({ required: true })
 
   // ==================== 响应式状态 ====================
-  const formRef = ref<FormInstance | null>(null)
+  const formRef: Ref<FormInstance | null> = ref(null)
   const isDev = ref(import.meta.env.DEV && DEBUG_CONFIG.showInDev)
 
   const message = useMessage()

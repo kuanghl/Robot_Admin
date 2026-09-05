@@ -8,12 +8,22 @@
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
  */
 
-import { HEAVY_PAGE_ROUTES } from '../heavyPages'
+import { HEAVY_PAGE_ROUTES } from '../heavyPages.ts'
+import { componentNames } from '@robot-admin/naive-ui-components/resolver'
+
+const PKG = '@robot-admin/naive-ui-components'
 
 export default {
   port: 1988,
   hmr: { overlay: true },
   open: true,
+
+  // 预打包组件库全部子路径入口：demo 页按需导入 C_* 子路径时，
+  // 避免 dev 期 Vite 按需发现新依赖触发整页 reload（会中断进行中的菜单导航，
+  // 表现为"菜单跳转失败、回到上一个菜单"）
+  optimizeDeps: {
+    include: componentNames.map(name => `${PKG}/${name}`),
+  },
 
   // 🚫 忽略 lang 目录的文件变化，避免自动刷新页面
   watch: {

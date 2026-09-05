@@ -129,10 +129,9 @@
               :columns="userColumns as any"
               :data="userList"
               :loading="loading"
-              :row-key="(row: any) => row.id"
+              row-key="id"
               :row-class-name="getRowClassName"
               :config="{
-                actions: tableActions as any,
                 selection: {
                   enabled: true,
                   defaultCheckedKeys: selectedUsers,
@@ -665,123 +664,123 @@
     )
   }
 
-  // ==================== 表格操作配置 ====================
-  const tableActions = computed(() => ({
-    // 使用完全自定义渲染
-    render: (row: UserData) => {
-      const buttons = [
-        // 详情按钮
-        h(
-          NButton,
-          {
-            size: 'small',
-            type: 'info',
-            quaternary: true,
-            onClick: () => handleViewUser(row),
-          },
-          () => [
-            h(C_Icon, {
-              name: COMPONENT_CONFIG.icons.eye,
-              size: 14,
-              title: '详情',
-            }),
-          ]
-        ),
-        // 编辑按钮
-        h(
-          NButton,
-          {
-            size: 'small',
-            type: 'warning',
-            quaternary: true,
-            onClick: () => handleEditUser(row),
-          },
-          () => [
-            h(C_Icon, {
-              name: COMPONENT_CONFIG.icons.edit,
-              size: 14,
-              title: '编辑',
-            }),
-          ]
-        ),
-        // 删除按钮
-        h(
-          NButton,
-          {
-            size: 'small',
-            type: 'error',
-            quaternary: true,
-            onClick: () => handleDeleteUser(row.id),
-          },
-          () => [
-            h(C_Icon, {
-              name: COMPONENT_CONFIG.icons.delete,
-              size: 14,
-              title: '删除',
-            }),
-          ]
-        ),
-      ]
-
-      // 更多操作下拉菜单
-      const moreOptions = [
+  // ==================== 表格操作渲染 ====================
+  const renderActions = (row: UserData) => {
+    const buttons = [
+      // 详情按钮
+      h(
+        NButton,
         {
-          key: 'toggle',
-          label: row.status === 1 ? '禁用' : '启用',
-          icon: () =>
-            h(C_Icon, {
-              name:
-                row.status === 1
-                  ? COMPONENT_CONFIG.icons.pause
-                  : COMPONENT_CONFIG.icons.play,
-              size: 14,
-            }),
+          size: 'small',
+          type: 'info',
+          quaternary: true,
+          onClick: () => handleViewUser(row),
         },
+        () => [
+          h(C_Icon, {
+            name: COMPONENT_CONFIG.icons.eye,
+            size: 14,
+            title: '详情',
+          }),
+        ]
+      ),
+      // 编辑按钮
+      h(
+        NButton,
         {
-          key: 'reset',
-          label: '重置密码',
-          icon: () => h(C_Icon, { name: COMPONENT_CONFIG.icons.key, size: 14 }),
-          disabled: row.status === 0,
+          size: 'small',
+          type: 'warning',
+          quaternary: true,
+          onClick: () => handleEditUser(row),
         },
-      ]
+        () => [
+          h(C_Icon, {
+            name: COMPONENT_CONFIG.icons.edit,
+            size: 14,
+            title: '编辑',
+          }),
+        ]
+      ),
+      // 删除按钮
+      h(
+        NButton,
+        {
+          size: 'small',
+          type: 'error',
+          quaternary: true,
+          onClick: () => handleDeleteUser(row.id),
+        },
+        () => [
+          h(C_Icon, {
+            name: COMPONENT_CONFIG.icons.delete,
+            size: 14,
+            title: '删除',
+          }),
+        ]
+      ),
+    ]
 
-      buttons.push(
-        h(
-          NDropdown,
-          {
-            options: moreOptions,
-            onSelect: (key: string) => {
-              if (key === 'toggle') {
-                handleToggleUserStatus(row)
-              } else if (key === 'reset') {
-                handleShowResetPassword(row)
-              }
+    // 更多操作下拉菜单
+    const moreOptions = [
+      {
+        key: 'toggle',
+        label: row.status === 1 ? '禁用' : '启用',
+        icon: () =>
+          h(C_Icon, {
+            name:
+              row.status === 1
+                ? COMPONENT_CONFIG.icons.pause
+                : COMPONENT_CONFIG.icons.play,
+            size: 14,
+          }),
+      },
+      {
+        key: 'reset',
+        label: '重置密码',
+        icon: () => h(C_Icon, { name: COMPONENT_CONFIG.icons.key, size: 14 }),
+        disabled: row.status === 0,
+      },
+    ]
+
+    buttons.push(
+      h(
+        NDropdown,
+        {
+          options: moreOptions,
+          onSelect: (key: string) => {
+            if (key === 'toggle') {
+              handleToggleUserStatus(row)
+            } else if (key === 'reset') {
+              handleShowResetPassword(row)
+            }
+          },
+        },
+        () =>
+          h(
+            NButton,
+            {
+              size: 'small',
+              quaternary: true,
             },
-          },
-          () =>
-            h(
-              NButton,
-              {
-                size: 'small',
-                quaternary: true,
-              },
-              () => [
-                h(C_Icon, {
-                  name: 'mdi:dots-horizontal',
-                  size: 14,
-                  title: '更多操作',
-                }),
-              ]
-            )
-        )
+            () => [
+              h(C_Icon, {
+                name: 'mdi:dots-horizontal',
+                size: 14,
+                title: '更多操作',
+              }),
+            ]
+          )
       )
+    )
 
-      return h(NSpace, { size: 2, wrap: false }, () => buttons)
-    },
-  }))
+    return h(NSpace, { size: 2, wrap: false }, () => buttons)
+  }
 
   // ==================== 表格列配置 ====================
   const userColumns: TableColumn<UserData>[] = [
+    {
+      type: 'selection',
+    },
     {
       title: TABLE_COLUMN_CONFIG.userType.title,
       key: 'userType',
@@ -845,6 +844,13 @@
       key: 'createTime',
       width: TABLE_COLUMN_CONFIG.createTime.width,
       render: createTextRenderer('createTime'),
+    },
+    {
+      title: '操作',
+      key: 'actions',
+      width: 180,
+      align: 'center',
+      render: renderActions,
     },
   ]
 

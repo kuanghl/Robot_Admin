@@ -275,7 +275,7 @@
    * ? @param loadingKey - 加载状态键
    */
   const executeDownload = async (
-    downloadFn: () => Promise<void>,
+    downloadFn: () => Promise<unknown>,
     fileName: string,
     fileType: string,
     loadingKey: keyof typeof loading
