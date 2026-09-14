@@ -20,9 +20,8 @@ const buildConfig: BuildOptions = {
             name: 'vue-vendor',
             test: /[\\/]node_modules[\\/](vue|vue-router|pinia)[\\/]/,
           },
-          // UI 组件库
-          { name: 'ui-vendor', test: /[\\/]node_modules[\\/]naive-ui[\\/]/ },
-          // 编辑器相关
+          // 编辑器由各自的动态路由独立拆分，避免 Markdown 与富文本编辑器互相捆绑加载。
+          // Markdown 编辑器（v-md-editor 及其依赖 wangeditor）
           {
             name: 'editor-vendor',
             // highlight.js 在启动阶段注册，不能与路由级富文本编辑器合并，
@@ -47,10 +46,6 @@ const buildConfig: BuildOptions = {
           // Spline 仅在登录背景组件内动态导入，交由 Rolldown 按路由分包，
           // 避免固定 vendor 组被提升为入口 preload。
           // 流程图/图编辑器
-          {
-            name: 'graph-vendor',
-            test: /[\\/]node_modules[\\/](@antv[\\/]x6|@vue-flow[\\/]core)[\\/]/,
-          },
           // 可视化库
           { name: 'viz-vendor', test: /[\\/]node_modules[\\/]@visactor[\\/]/ },
         ],

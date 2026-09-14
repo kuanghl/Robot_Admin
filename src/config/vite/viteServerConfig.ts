@@ -8,15 +8,23 @@
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
  */
 
-import { HEAVY_PAGE_ROUTES } from '../heavyPages.ts'
+import { resolve } from 'node:path'
 import { componentNames } from '@robot-admin/naive-ui-components/resolver'
+import { isLocalPackageMode } from './localPackagesAlias.ts'
 
 const PKG = '@robot-admin/naive-ui-components'
+
+const localPackageRoots = isLocalPackageMode()
+  ? [
+      resolve(process.cwd(), '../robot-admin-packages'),
+      resolve(process.cwd(), '../naive-ui-components'),
+    ]
+  : []
 
 export default {
   port: 1988,
   hmr: { overlay: true },
-  open: true,
+  open: false,
 
   // 预打包组件库全部子路径入口：demo 页按需导入 C_* 子路径时，
   // 避免 dev 期 Vite 按需发现新依赖触发整页 reload（会中断进行中的菜单导航，
@@ -32,20 +40,8 @@ export default {
 
   // 允许访问外部包目录（@robot-admin/layout）
   fs: {
-    allow: ['..'],
-  },
-
-  // ⚡ 预热高频文件（开发环境优化 - 首次访问更快）
-  // 经测试：不影响启动速度（6s → 6s），但能加快首次访问 50-70%
-  warmup: {
-    clientFiles: [
-      // 核心文件
-      './src/App.vue',
-      './src/router/index.ts',
-
-      // 重量级页面（自动映射 HEAVY_PAGE_ROUTES，会自动预热它们的依赖组件）
-      ...HEAVY_PAGE_ROUTES.map(route => `./src/views${route}/index.vue`),
-    ],
+    strict: true,
+    allow: [resolve(process.cwd()), ...localPackageRoots],
   },
 
   proxy: {

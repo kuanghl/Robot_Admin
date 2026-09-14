@@ -77,6 +77,7 @@
 <script setup lang="ts">
   import { s_themeStore } from '@/stores/theme'
   import { s_settingsStore } from '@/stores/settings'
+  import { MENU_COLLAPSE_KEY } from '@robot-admin/layout/naive'
   import { translateRouteTitle } from '@/utils/plugins/i18n-route'
   import C_NavbarRight from '@/components/global/C_NavbarRight/index.vue'
 
@@ -94,13 +95,11 @@
     showSettings: ref(false), // 提供默认值以兼容旧代码
   })
 
-  interface MenuCollapse {
-    isCollapsed: Ref<boolean>
-    handleCollapsedChange: (collapsed: boolean) => void
-  }
-
-  const { isCollapsed, handleCollapsedChange } =
-    inject<MenuCollapse>('menuCollapse')!
+  // 使用布局包的类型化 key；独立页面也提供同一契约。
+  const { isCollapsed, handleCollapsedChange } = inject(MENU_COLLAPSE_KEY, {
+    isCollapsed: computed(() => false),
+    handleCollapsedChange: () => undefined,
+  })
 </script>
 
 <style lang="scss" scoped>

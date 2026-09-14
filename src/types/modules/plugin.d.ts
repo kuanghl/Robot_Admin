@@ -19,12 +19,6 @@ declare module '@/plugins/naive-ui' {
   export function setupNaiveUI(app: App): void
 }
 
-declare module 'naive-ui' {
-  interface NAlertSlots {
-    action?: () => VNode[]
-  }
-}
-
 // =================== v-md-editor 模块声明 ===================
 
 declare module '@kangc/v-md-editor' {

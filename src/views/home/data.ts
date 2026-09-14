@@ -1,3 +1,31 @@
+/*
+ * @Author: ChenYu ycyplus@gmail.com
+ * @Date: 2026-09-02
+ * @FilePath: \Robot_Admin\src\views\home\data.ts
+ * @Description: 首页展示数据
+ * Copyright (c) 2026 by CHENY, All Rights Reserved 😎.
+ */
+
+import type { ButtonProps, TagProps } from 'naive-ui'
+
+interface HomeActionButton {
+  text: string
+  icon: string
+  url: string
+  type?: ButtonProps['type']
+  secondary?: boolean
+  tertiary?: boolean
+  strong?: boolean
+}
+
+interface TechLayer {
+  name: string
+  icon: string
+  className: string
+  tagType: TagProps['type']
+  techs: string[]
+}
+
 // 项目统计数据
 export const projectStats = [
   { icon: 'fluent-color:approvals-app-16', number: '当前', label: 'Monomer' },
@@ -16,7 +44,7 @@ export const projectStats = [
 ]
 
 // 操作按钮
-export const actionButtons = [
+export const actionButtons: HomeActionButton[] = [
   {
     text: '在线演示',
     icon: '▶️',
@@ -92,13 +120,13 @@ export const highlights = [
 ]
 
 // 技术架构层级
-export const techLayers = [
+export const techLayers: TechLayer[] = [
   {
     name: '前端框架层',
     icon: '🖥️',
     className: 'layer-frontend',
     tagType: 'info',
-    techs: ['Vue 3.5.13', 'TypeScript 5.8', 'Naive UI 2.41', 'UnoCSS 66.3'],
+    techs: ['Vue 3.5.42', 'TypeScript 5.8', 'Naive UI 2.45', 'UnoCSS 66.9'],
   },
   {
     name: '构建工具层',
@@ -112,14 +140,14 @@ export const techLayers = [
     icon: '🔗',
     className: 'layer-state',
     tagType: 'warning',
-    techs: ['Pinia 3.0.1', 'Vue Router 4.5', 'VueUse 13.1', 'Persistedstate'],
+    techs: ['Pinia 4.0', 'Vue Router 5.3', 'VueUse 14.4', 'Persistedstate'],
   },
   {
     name: '工具集成层',
     icon: '🛠️',
     className: 'layer-tools',
     tagType: 'error',
-    techs: ['Axios 1.9', 'ECharts 5.6', 'AntV X6', 'Vue Flow'],
+    techs: ['Axios 1.20', 'ECharts 6.1', 'AntV X6', 'Vue Flow'],
   },
   {
     name: '开发体验层',
@@ -144,7 +172,7 @@ export const projectMetrics = [
 export const ecosystemPackages = [
   {
     shortName: 'naive-ui-components',
-    version: '0.11.6',
+    version: '0.11.8',
     icon: 'mdi:puzzle-outline',
     color: '#6366f1',
     desc: '51+ 业务组件，按需导入，主题覆盖',
@@ -152,26 +180,26 @@ export const ecosystemPackages = [
   },
   {
     shortName: 'request-core',
-    version: '0.2.0',
+    version: '0.5.0',
     icon: 'mdi:api',
     color: '#10b981',
-    desc: 'Axios + 6 类插件，CRUD Composables',
+    desc: '请求编排、认证恢复与函数式 Headless CRUD',
     url: 'https://www.npmjs.com/package/@robot-admin/request-core',
   },
   {
     shortName: 'layout',
-    version: '2.3.2',
+    version: '3.2.1',
     icon: 'mdi:page-layout-sidebar-left',
     color: '#f59e0b',
-    desc: '6 种布局模式，设置管理，主题同步',
+    desc: '6 种布局模式，精简适配，安全设置管理',
     url: 'https://www.npmjs.com/package/@robot-admin/layout',
   },
   {
     shortName: 'theme',
-    version: '0.4.0',
+    version: '0.5.1',
     icon: 'mdi:palette-outline',
     color: '#ec4899',
-    desc: 'Light / Dark / System 主题切换',
+    desc: '分层主题核心、Vue 状态与 Naive UI 适配',
     url: 'https://www.npmjs.com/package/@robot-admin/theme',
   },
   {
@@ -187,7 +215,7 @@ export const ecosystemPackages = [
     version: '3.4.2',
     icon: 'mdi:check-decagram-outline',
     color: '#ef4444',
-    desc: '48+ 验证规则，中国本地化，Naive UI 适配',
+    desc: '双框架验证、规则组合与批量校验',
     url: 'https://www.npmjs.com/package/@robot-admin/form-validate',
   },
   {
@@ -200,7 +228,7 @@ export const ecosystemPackages = [
   },
   {
     shortName: 'git-standards',
-    version: '1.0.4',
+    version: '1.0.5',
     icon: 'mdi:source-branch',
     color: '#f97316',
     desc: '规范提交 · 中文引导推送',

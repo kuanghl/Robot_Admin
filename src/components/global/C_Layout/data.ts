@@ -11,11 +11,12 @@ import {
   GROUP_COLORS,
   OTHER_GROUP_LABEL,
   type MenuGroupConfig,
-} from '@/components/global/C_MenuGrouped/data'
+} from '../C_MenuGrouped/data'
+import type { LayoutMenuItem } from '@robot-admin/layout/naive'
 
 export interface MenuGroup {
   label: string
-  items: any[]
+  items: LayoutMenuItem[]
 }
 
 export const isMatchGroup = (
@@ -28,7 +29,7 @@ export const isMatchGroup = (
   return false
 }
 
-export const buildGroupedMenuData = (menus: any[]): MenuGroup[] => {
+export const buildGroupedMenuData = (menus: LayoutMenuItem[]): MenuGroup[] => {
   const buckets: MenuGroup[] = DEFAULT_MENU_GROUPS.map(g => ({
     label: g.label,
     items: [],

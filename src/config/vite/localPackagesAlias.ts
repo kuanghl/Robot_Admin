@@ -109,67 +109,49 @@ function collectTransitiveDeps(
   }
 }
 
-/**
- * 获取本地包别名配置
- *
- * @description
- * 支持两种本地调试模式：
- *
- * | 命令 | monorepo 包 | 独立包 | 适用场景 |
- * |------|-------------|--------|---------|
- * | `bun run dev` | npm | npm | 日常开发 |
- * | `bun run dev:components` | npm | 本地源码 | 调试组件库 |
- * | `bun run dev:local` | 本地源码 | 本地源码 | 全量调试 |
- *
- * **工作原理：**
- * - 使用正则精确匹配主入口（如 `@robot-admin/layout$`）
- * - 子路径导出（如 `/style`）仍从 node_modules 解析
- *
- * @returns Vite alias 配置数组
- */
-export function getLocalPackagesAlias(): Alias[] {
-  const isFullMode = LOCAL_PACKAGE_CONFIG.enabled
-  const isComponentsOnly = STANDALONE_MODE
-
-  if (!isFullMode && !isComponentsOnly) {
-    return []
+const addMonorepoAliases = (aliases: Alias[], packageNames: string[]): void => {
+  const localPath = resolve(process.cwd(), LOCAL_PACKAGE_CONFIG.packagesDir)
+  if (!existsSync(localPath)) {
+    console.warn('⚠️  未找到 monorepo 包目录，跳过扫描')
+    console.warn(`    路径: ${localPath}`)
+    return
   }
 
-  const aliases: Alias[] = []
-  const packageNames: string[] = []
+  for (const pkgName of readdirSync(localPath)) {
+    const srcPath = resolve(localPath, pkgName, 'src')
+    if (!existsSync(srcPath)) continue
 
-  // ── 1. Monorepo packages（仅在全量模式下启用）──
-  if (isFullMode) {
-    const localPath = resolve(process.cwd(), LOCAL_PACKAGE_CONFIG.packagesDir)
+    const fullPackageName = `${LOCAL_PACKAGE_CONFIG.namespace}/${pkgName}`
 
-    if (existsSync(localPath)) {
-      readdirSync(localPath).forEach(pkgName => {
-        const srcPath = resolve(localPath, pkgName, 'src')
-
-        if (!existsSync(srcPath)) {
-          return
-        }
-
-        const fullPackageName = `${LOCAL_PACKAGE_CONFIG.namespace}/${pkgName}`
+    // layout 采用分层入口；本地联调时也必须精确指向源码，
+    // 避免 /core、/vue、/naive 静默回落到 node_modules。
+    if (pkgName === 'layout') {
+      for (const subpath of ['core', 'vue', 'naive']) {
+        const subpathEntry = resolve(srcPath, subpath, 'index.ts')
+        if (!existsSync(subpathEntry)) continue
 
         aliases.push({
-          find: new RegExp(`^${fullPackageName.replace(/\//g, '\\/')}$`),
-          replacement: srcPath,
+          find: new RegExp(
+            `^${fullPackageName.replace(/\//g, '\\/')}/${subpath}$`
+          ),
+          replacement: subpathEntry,
         })
-
-        packageNames.push(pkgName)
-
-        // 自动解析传递依赖：读取被别名包的 dependencies，
-        // 对主项目 node_modules 中不存在的依赖，从该包自身的 node_modules 解析
-        collectTransitiveDeps(localPath, pkgName, aliases)
-      })
-    } else {
-      console.warn('⚠️  未找到 monorepo 包目录，跳过扫描')
-      console.warn(`    路径: ${localPath}`)
+      }
     }
-  }
 
-  // ── 2. 独立本地包（全量模式 或 组件模式 均启用）──
+    aliases.push({
+      find: new RegExp(`^${fullPackageName.replace(/\//g, '\\/')}$`),
+      replacement: srcPath,
+    })
+    packageNames.push(pkgName)
+    collectTransitiveDeps(localPath, pkgName, aliases)
+  }
+}
+
+const addStandaloneAliases = (
+  aliases: Alias[],
+  packageNames: string[]
+): void => {
   for (const [pkgName, relativePath] of Object.entries(
     STANDALONE_LOCAL_PACKAGES
   )) {
@@ -185,13 +167,21 @@ export function getLocalPackagesAlias(): Alias[] {
 
     const fullPackageName = `${LOCAL_PACKAGE_CONFIG.namespace}/${pkgName}`
 
+    if (pkgName === 'naive-ui-components') {
+      aliases.push({
+        find: new RegExp(
+          `^${fullPackageName.replace(/\//g, '\\/')}/(C_[A-Za-z0-9_]+)$`
+        ),
+        replacement: resolve(srcDir, 'components', '$1', 'index.ts'),
+      })
+    }
+
     aliases.push({
       find: new RegExp(`^${fullPackageName.replace(/\//g, '\\/')}$`),
       replacement,
     })
 
-    // 同时将 style.css 子路径映射到本地源码的 global.scss
-    // 否则 `import '...naive-ui-components/style.css'` 仍加载安装包的旧 CSS
+    // 全局样式入口在本地模式下仅映射共享变量；组件样式由源码 SFC 自行产出。
     const localStyleScss = resolve(
       process.cwd(),
       relativePath,
@@ -208,8 +198,52 @@ export function getLocalPackagesAlias(): Alias[] {
       })
     }
 
+    // 本地独立包与 npm 安装保持同一依赖语义；仅为主项目缺失的传递依赖补精确别名。
+    collectTransitiveDeps(
+      resolve(process.cwd(), relativePath, '..'),
+      pkgName,
+      aliases
+    )
+
     packageNames.push(`${pkgName}(独立)`)
   }
+}
+
+/**
+ * 获取本地包别名配置
+ *
+ * @description
+ * 支持两种本地调试模式：
+ *
+ * | 命令 | monorepo 包 | 独立包 | 适用场景 |
+ * |------|-------------|--------|---------|
+ * | `bun run dev` | npm | npm | 日常开发 |
+ * | `bun run dev:components` | npm | 本地源码 | 调试组件库 |
+ * | `bun run dev:local` | 本地源码 | 本地源码 | 全量调试 |
+ *
+ * **工作原理：**
+ * - 使用正则精确匹配主入口（如 `@robot-admin/layout$`）
+ * - layout 的 `/core`、`/vue`、`/naive` 入口同步映射到本地源码
+ * - 样式子路径仍从 node_modules 解析，与已安装版本保持一致
+ *
+ * @returns Vite alias 配置数组
+ */
+export function getLocalPackagesAlias(): Alias[] {
+  const isFullMode = LOCAL_PACKAGE_CONFIG.enabled
+  const isComponentsOnly = STANDALONE_MODE
+
+  if (!isFullMode && !isComponentsOnly) {
+    return []
+  }
+
+  const aliases: Alias[] = []
+  const packageNames: string[] = []
+
+  // ── 1. Monorepo packages（仅在全量模式下启用）──
+  if (isFullMode) addMonorepoAliases(aliases, packageNames)
+
+  // ── 2. 独立本地包（全量模式 或 组件模式 均启用）──
+  addStandaloneAliases(aliases, packageNames)
 
   if (aliases.length > 0) {
     const modeLabel = isFullMode ? 'dev:local' : 'dev:components'

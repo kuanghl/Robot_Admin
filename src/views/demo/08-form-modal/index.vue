@@ -149,13 +149,16 @@
       :width="500"
       placement="right"
     >
-      <NDrawerContent title="商品详情配置">
-        <template #header-extra>
-          <NTag
-            type="success"
-            size="small"
-            >默认布局</NTag
-          >
+      <NDrawerContent>
+        <template #header>
+          <div class="drawer-header">
+            <span>商品详情配置</span>
+            <NTag
+              type="success"
+              size="small"
+              >默认布局</NTag
+            >
+          </div>
         </template>
         <C_Form
           ref="drawerFormRef"
@@ -195,7 +198,7 @@
         <template #header>
           <div class="sidebar-header">
             <div class="header-info">
-              <i class="i-mdi:air-filter mr-2" />
+              <i class="i-mdi-air-filter mr-2" />
               <span>筛选条件</span>
               <NTag
                 type="warning"
@@ -211,7 +214,7 @@
               @click="showSidebar = false"
             >
               <template #icon>
-                <i class="i-mdi:close-octagon" />
+                <i class="i-mdi-close-octagon" />
               </template>
             </NButton>
           </div>
@@ -379,4 +382,11 @@
 
 <style lang="scss" scoped>
   @use './index.scss';
+
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
 </style>

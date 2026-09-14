@@ -61,9 +61,9 @@
 
   <p>
     <img src="https://img.shields.io/badge/bun-%E2%89%A51.3.x-ff1e56?style=flat&logo=bun" alt="Bun Version">
-    <img src="https://img.shields.io/badge/vue-3.5.13-4FC08D?style=flat&logo=vue.js" alt="Vue Version">
+    <img src="https://img.shields.io/badge/vue-3.5.42-4FC08D?style=flat&logo=vue.js" alt="Vue Version">
     <img src="https://img.shields.io/badge/typescript-5.8.3-blue?style=flat&logo=typescript" alt="TypeScript Version">
-    <img src="https://img.shields.io/badge/vite-8.0.3-646CFF?style=flat&logo=vite" alt="Vite Version">
+    <img src="https://img.shields.io/badge/vite-8.2.2-646CFF?style=flat&logo=vite" alt="Vite Version">
     <a href="https://vercel.com"><img src="https://img.shields.io/github/deployments/ChenyCHENYU/robot_admin/production?label=vercel&logo=vercel" alt="Vercel"></a>
     <a href="https://standardjs.com"><img src="https://img.shields.io/badge/code_style-standard-brightgreen" alt="Code Style"></a>
   </p>
@@ -175,7 +175,7 @@ bun install
 bun run dev
 ```
 
-**🔥 首次启动只需 2 秒不到，后续热更新不到 100ms！**
+**🔥 依赖缓存就绪后，开发服务器热启动约 3 秒，后续更新保持毫秒级！**
 
 <details>
 <summary><b>📦 更多命令</b></summary>
@@ -183,6 +183,7 @@ bun run dev
 ```bash
 # 开发相关
 bun run dev            # 开发环境启动
+bun run dev:banner     # 显式启用完整 Git 分支横幅（会增加启动等待）
 bun run build          # 生产环境构建
 bun run build:test     # 测试环境构建
 bun run build:staging  # 预发布构建
@@ -193,7 +194,9 @@ bun run lint           # 代码检查和修复
 bun run lint:check     # 只检查，不修改文件
 bun run format         # 代码格式化
 bun run test           # 单元测试
-bun run verify         # Lint + 类型 + 测试 + 生产构建
+bun run verify         # 双 Lint + 类型 + 测试 + 生产构建 + 体积预算
+bun run check:bundle   # 校验最近一次生产构建的首屏体积预算
+bun run security:audit # 检查依赖安全公告
 
 # 类型检查
 bun run type-watch     # 监听模式类型检查
@@ -209,9 +212,9 @@ bun run commit         # 规范化提交（git cz）
 
 ### 🔐 认证 Mock 与后端切换
 
-项目在没有后端工程时默认使用闭环 Mock 认证，登录、令牌刷新和用户信息的响应结构与远端接口保持一致。任意非空用户名和密码均可登录；Mock 令牌为随机不透明字符串，不包含明文凭据。
+项目在开发、测试环境默认使用闭环 Mock 认证和业务数据，登录、令牌刷新和用户信息的响应结构与远端接口保持一致。任意非空用户名和密码均可登录；Mock 令牌为随机不透明字符串，不包含明文凭据。在线演示构建通过 `VITE_DEPLOYMENT_PROFILE=demo` 显式启用同一套 Mock，真实业务构建必须使用 `application` 配置和远端接口。
 
-接入后端时只需在环境配置中设置 `VITE_AUTH_MODE=remote`，并通过 `VITE_API_BASE` 指定接口地址，无需修改页面和状态管理代码。认证契约位于 `src/api/auth.contract.ts`，Mock 实现位于 `src/api/auth.mock.ts`。
+接入后端时设置 `VITE_DEPLOYMENT_PROFILE=application`、`VITE_AUTH_MODE=remote`、`VITE_DATA_MODE=remote`，并通过 `VITE_API_BASE` 指定接口地址，无需修改页面和状态管理代码。`application` 的生产与预发构建会拒绝 Mock 模式；只有明确标记为 `demo` 的公开演示构建允许 Mock。认证契约位于 `src/api/auth.contract.ts`，账号和权限治理等远端接口约定位于 `src/api/`；完整环境及接口说明见 [`docs/production-readiness.md`](docs/production-readiness.md)。
 
 ---
 
@@ -224,28 +227,31 @@ bun run commit         # 规范化提交（git cz）
 
 **🎭 前端核心**
 
-- **Vue 3.5.42** - 🔥 最新稳定版，Composition API 丝滑体验
-- **TypeScript 5.8.3** - 🛡️ 类型安全，智能提示
+- **Vue 3.5.42** - 🔥 Composition API 丝滑体验
+- **TypeScript 5.8** - 🛡️ 类型安全，智能提示
+- **Pinia 4.0.3** - 🍍 类型安全的模块化状态管理
+- **Vue Router 5.3.1** - 🧭 路由守卫与动态路由
+- **VueUse 14.4.0** - 🧰 按需使用的组合式工具集
 - **Naive UI 2.45.3** - 🎨 颜值与性能并存的组件库
 - **@robot-admin/naive-ui-components** - 🧩 51+ 业务组件库，按需自动导入
-- **UnoCSS 66.3.3** - ⚡ 原子化CSS，按需生成，体积极小
+- **UnoCSS 66.10** - ⚡ 原子化CSS，按需生成，体积极小
 
 **⚙️ 构建工具**
 
 - **Bun 1.3.x** - 🚀 性能怪兽，安装速度提升10倍
-- **Vite 8.0.3** - ⚡ Rolldown 统一构建引擎，构建速度提升 10-30x
-- **Sass 1.87** - 🎨 成熟的CSS预处理器
+- **Vite 8.2.2** - ⚡ Rolldown 统一构建引擎，构建速度提升 10-30x
+- **Sass 1.104** - 🎨 成熟的CSS预处理器
 
 **🔧 开发工具**
 
-- **ESLint 9.21** - 📏 代码质量守护者
-- **Prettier 3.5** - ✨ 代码格式化
-- **Oxlint 0.15** - 🦀 Rust编写的超快Linter
-- **Vitest 3.0** - 🧪 现代化测试框架
+- **ESLint 10.9** - 📏 代码质量守护者
+- **Prettier 3.9** - ✨ 代码格式化
+- **Oxlint 1.81** - 🦀 Rust编写的超快Linter
+- **Bun Test 1.3** - 🧪 与包管理器统一的测试运行时
 
 **📊 功能组件（via @robot-admin/naive-ui-components）**
 
-- **ECharts 5.6** - 企业级图表库
+- **ECharts 6.1** - 企业级图表库
 - **AntV X6** - 专业流程图引擎（BPMN/ER/UML）
 - **FullCalendar** - 完整的日程管理
 - **WangEditor** - 富文本编辑器
@@ -318,7 +324,7 @@ bun run commit         # 规范化提交（git cz）
 - `C_WaterFall` - 瀑布流布局
 - `C_Cascade` - 地区级联选择
 - `C_City` - 城市选择器
-- `C_Map` - Leaflet 地图
+- `C_Map` - Leaflet / 高德地图（强类型坐标、标记适配、安全代理）
 - `C_Captcha` - 验证码
 - `C_Guide` - 新手引导
 - `C_GlobalSearch` - 全局搜索
@@ -727,25 +733,28 @@ location / {
 <details>
 <summary><b>查看完整版本历程 (v1.0 → v2.5)</b></summary>
 
-| 版本   | 时间    | 主要更新                                                  |
-| ------ | ------- | --------------------------------------------------------- |
-| v1.0   | 2025-07 | 🎉 项目初版：Vue3 + Vite + Naive UI + Pinia 基础架构      |
-| v1.6   | 2025-10 | 🎨 主题系统 + UnoCSS + 演示页面体系                       |
-| v1.11  | 2025-12 | 🧩 组件库雏形 + i18n 国际化 + 性能优化                    |
-| v1.12  | 2026-02 | 📦 `@robot-admin/request-core` 独立发布                   |
-| v1.13  | 2026-02 | 🔧 Composable 架构重构，各 npm 包逐步独立发布             |
-| v1.14  | 2026-02 | ✨ 新增 10 个组件（签名/裁剪/Cron/瀑布流等）              |
-| v2.0   | 2026-03 | 🏗️ **架构重构**：39 个组件迁移至独立 npm 包，零冗余       |
-| v2.1   | 2026-03 | 🔐 Token 无感刷新 + 权限体系升级 + 可插拔登录组件         |
-| v2.2   | 2026-03 | 🎭 菜单双主题 + Vite 8 升级 + 全量 TypeScript 通过        |
-| v2.2.1 | 2026-03 | 🔧 Vite 8.0.3 正式升级 + 样式细节优化                     |
-| v2.5   | 2026-09 | 🚀 全量依赖升级：Vue 3.5.42 / Vite 8.2.2 / 组件库 v0.11.6 |
+| 版本   | 时间    | 主要更新                                             |
+| ------ | ------- | ---------------------------------------------------- |
+| v1.0   | 2025-07 | 🎉 项目初版：Vue3 + Vite + Naive UI + Pinia 基础架构 |
+| v1.6   | 2025-10 | 🎨 主题系统 + UnoCSS + 演示页面体系                  |
+| v1.11  | 2025-12 | 🧩 组件库雏形 + i18n 国际化 + 性能优化               |
+| v1.12  | 2026-02 | 📦 `@robot-admin/request-core` 独立发布              |
+| v1.13  | 2026-02 | 🔧 Composable 架构重构，各 npm 包逐步独立发布        |
+| v1.14  | 2026-02 | ✨ 新增 10 个组件（签名/裁剪/Cron/瀑布流等）         |
+| v2.0   | 2026-03 | 🏗️ **架构重构**：39 个组件迁移至独立 npm 包，零冗余  |
+| v2.1   | 2026-03 | 🔐 Token 无感刷新 + 权限体系升级 + 可插拔登录组件    |
+| v2.2   | 2026-03 | 🎭 菜单双主题 + Vite 8 升级 + 全量 TypeScript 通过   |
+| v2.2.1 | 2026-03 | 🔧 Vite 8.0.3 正式升级 + 样式细节优化                |
+| v2.3   | 2026-04 | 🤖 AI 技能、MCP Server 与工程协作规范                |
+| v2.4   | 2026-04 | 🎨 设计风格系统与 iOS 拟态玻璃主题                   |
+| v2.5   | 2026-08 | ⚡ 路由级按需加载、菜单分组与生产就绪加固            |
 
 </details>
 
 ### 🚀 近期计划 (2026 Q2)
 
-- [ ] 📊 性能监控与错误追踪集成
+- [x] 📊 可配置的脱敏错误上报与构建体积回归门禁
+- [ ] 📈 Web Vitals 真实用户性能监控与可观测平台接入
 - [ ] 🎨 可视化低代码页面模板
 - [ ] 🏢 多租户系统支持
 - [x] 🔌 Robot CLI 脚手架工具
@@ -768,14 +777,14 @@ location / {
 
 **已发布组件库**
 
-- **[@robot-admin/naive-ui-components](https://www.npmjs.com/package/@robot-admin/naive-ui-components)** `v0.11.6` - 基于 Naive UI 的 Vue 3 业务组件库（51+ 组件，按需导入）
-- **[@robot-admin/layout](https://www.npmjs.com/package/@robot-admin/layout)** `v2.3.2` - 6 种布局模式 + 安全设置管理 + 无障碍交互
-- **[@robot-admin/request-core](https://www.npmjs.com/package/@robot-admin/request-core)** `v0.2.0` - Axios 请求编排 + 6 类插件能力 + useTableCrud
-- **[@robot-admin/form-validate](https://www.npmjs.com/package/@robot-admin/form-validate)** `v3.4.2` - 48+ 企业级表单验证规则库
+- **[@robot-admin/naive-ui-components](https://www.npmjs.com/package/@robot-admin/naive-ui-components)** `v0.11.8` - 基于 Naive UI 的 Vue 3 业务组件库（51+ 组件，按需导入）
+- **[@robot-admin/layout](https://www.npmjs.com/package/@robot-admin/layout)** `v3.2.1` - 6 种布局模式 + `/naive` 单入口 + Vue Headless 分层
+- **[@robot-admin/request-core](https://www.npmjs.com/package/@robot-admin/request-core)** `v0.5.0` - 实例化 Axios 编排、认证恢复与函数式 Headless CRUD
+- **[@robot-admin/form-validate](https://www.npmjs.com/package/@robot-admin/form-validate)** `v3.4.2` - Naive UI / Element Plus 双框架企业级表单验证规则库
 - **[@robot-admin/directives](https://www.npmjs.com/package/@robot-admin/directives)** `v2.0.1` - 11 个安全、可回收的 Vue 指令
 - **[@robot-admin/file-utils](https://www.npmjs.com/package/@robot-admin/file-utils)** `v3.0.1` - Excel/ZIP/RFC 4180 CSV/可取消分片工具集
-- **[@robot-admin/theme](https://www.npmjs.com/package/@robot-admin/theme)** `v0.4.0` - 主题切换、安全持久化与设计风格系统
-- **[@robot-admin/git-standards](https://www.npmjs.com/package/@robot-admin/git-standards)** `v1.0.4` - 幂等初始化与配置备份的 Git 工程化标准
+- **[@robot-admin/theme](https://www.npmjs.com/package/@robot-admin/theme)** `v0.5.1` - 分层主题核心、Vue 状态管理与 Naive UI 适配
+- **[@robot-admin/git-standards](https://www.npmjs.com/package/@robot-admin/git-standards)** `v1.0.5` - 安全初始化、配置保护与双模块兼容的 Git 工程化标准
 
 **已发布周边工具**
 
@@ -788,7 +797,6 @@ location / {
 - **[vite-console-plugin](https://www.npmjs.com/package/vite-console-plugin)** `v2.0.16` - Vite 启动台控制台美化与提示插件
 - **[ts-type-cleaner](https://www.npmjs.com/package/ts-type-cleaner)** `v5.1.0` - 智能 TypeScript 类型分析和清理工具
 - **[vite-plugin-preloader](https://www.npmjs.com/package/vite-plugin-preloader)** `v2.0.1` - 智能路由预加载插件
-- **[robot-admin-env-manager](https://www.npmjs.com/package/robot-admin-env-manager)** `v1.1.0` - Robot Admin 环境配置管理工具
 - **[git-branch-check-diff-commits](https://www.npmjs.com/package/git-branch-check-diff-commits)** `v1.3.0` - Git 分支快速比对合并检查
 - **[git-log-formatter](https://www.npmjs.com/package/git-log-formatter)** `v1.0.2` - Git log 格式化美化工具
 - **[standards-cli](https://www.npmjs.com/package/standards-cli)** `v1.0.13` - 前端工程化提交规范初始化工具
@@ -939,21 +947,21 @@ bun run type-build
 <details>
 <summary><b>为什么选择 Robot Admin？</b></summary>
 
-|   特性对比    |       Robot Admin       | Ant Design Pro | Vue Element Admin |   其他框架   |
-| :-----------: | :---------------------: | :------------: | :---------------: | :----------: |
-|  🚀 启动速度  |     **Bun < 100ms**     |    npm ~2s     |    yarn ~1.5s     |   普遍较慢   |
-| ⚡ 热更新速度 |    **< 100ms 极速**     |   ~1.5s 等待   |     ~1s 等待      |   普遍较慢   |
-|  📦 构建工具  | **Vite 8.x (Rolldown)** |  Webpack/Vite  |    Webpack 4/5    |   工具多样   |
-| 🎨 UI 组件库  |    **Naive UI 轻量**    |   Ant Design   |   Element Plus    |   选择多样   |
-| 💪 TypeScript |    **完整类型支持**     |    基础支持    |     基础支持      | 支持程度不一 |
-| 🔧 自定义指令 |     **7个实用指令**     |    少量指令    |     基础指令      |   功能有限   |
-|  📊 演示页面  |    **54+ 完整示例**     |    有限示例    |     有限示例      |   基础示例   |
-|  🎯 学习成本  |      **中等友好**       |    较高门槛    |     中等门槛      |   差异较大   |
-|  📈 维护状态  |     **🔥 积极维护**     |    持续维护    |     持续维护      |   状态不一   |
+|   特性对比    |        Robot Admin        | Ant Design Pro | Vue Element Admin |   其他框架   |
+| :-----------: | :-----------------------: | :------------: | :---------------: | :----------: |
+|  🚀 启动速度  | **热启动约 3 秒（实测）** |   依项目而定   |    依项目而定     |  依项目而定  |
+| ⚡ 热更新速度 |     **< 100ms 极速**      |   ~1.5s 等待   |     ~1s 等待      |   普遍较慢   |
+|  📦 构建工具  |  **Vite 8.x (Rolldown)**  |  Webpack/Vite  |    Webpack 4/5    |   工具多样   |
+| 🎨 UI 组件库  |     **Naive UI 轻量**     |   Ant Design   |   Element Plus    |   选择多样   |
+| 💪 TypeScript |     **完整类型支持**      |    基础支持    |     基础支持      | 支持程度不一 |
+| 🔧 自定义指令 |      **7个实用指令**      |    少量指令    |     基础指令      |   功能有限   |
+|  📊 演示页面  |     **54+ 完整示例**      |    有限示例    |     有限示例      |   基础示例   |
+|  🎯 学习成本  |       **中等友好**        |    较高门槛    |     中等门槛      |   差异较大   |
+|  📈 维护状态  |      **🔥 积极维护**      |    持续维护    |     持续维护      |   状态不一   |
 
 **选择 Robot Admin 的理由**:
 
-- 🚀 **性能优先**: Bun + Vite8 (Rolldown) 双引擎，开发体验极致
+- 🚀 **性能优先**: Bun + Vite 8 (Rolldown)，依赖缓存就绪后开发服务器热启动约 3 秒
 - 🧩 **组件丰富**: 51+ 业务组件，独立组件库按需导入
 - 🎨 **设计现代**: Naive UI + UnoCSS，颜值与性能并存
 - 📚 **学习友好**: 54+ 演示页面，每个都是最佳实践
@@ -1076,19 +1084,16 @@ bun run type-build
 
 ## 📄 更新日志
 
-### 🚀 v2.5.0 (2026-09-04) — 最新版本
+### 🚀 v2.5.0 (2026-08-10) — 最新版本
 
-- 🚀 **全量依赖升级**：Vue 3.5.42 / Vite 8.2.2 / Rolldown 1.2.7 / TypeScript 5.8.3
-- 📦 **生态组件库升级**：`@robot-admin/naive-ui-components@0.11.6`（C_Form / C_Table 强类型与样式分包）、`form-validate@3.4.2`（批量校验）、`directives@2.0.1`、`file-utils@3.0.1`
+- 🧭 **布局与菜单**：新增分组菜单右侧展开面板，完善多布局导航体验
+- ⚡ **按需加载**：大型页面、编辑器和文件能力改为路由级加载，降低首屏负担
+- 🧩 **组件工程化**：业务组件使用子路径入口和官方 Resolver
+- 🛡️ **生产就绪**：补齐远端数据契约、错误脱敏、安全头、质量及体积门禁
+- 🚀 **全量依赖升级**：Vue 3.5.42 / Vite 8.2.2 / TypeScript 5.8.3
+- 📦 **生态组件库升级**：`@robot-admin/naive-ui-components@0.11.8`、`layout@3.2.1`、`request-core@0.5.0`、`theme@0.5.1`
 - 🧰 **开发工具链升级**：ESLint 10.9 / oxlint 1.81 / vue-tsc 3.3 / UnoCSS 66.10 / Naive UI 2.45.3
-- ✅ `bun run verify` 全链路验证通过（只读 Lint + 类型检查 + 单元测试 + 生产构建）
-
-### 🚀 v2.2.1 (2026-03-27)
-
-- 🔧 **Vite 8.0.3 + Rolldown**：升级至 Vite 最新版，构建引擎持续优化
-- 🎨 **样式细节优化**：NCard 全局间距优化，暗色主题细节全面提升
-- 🔒 **工程化修复**：oxlint 版本锁定，修复 pre-commit 钩子兼容性问题
-- 📐 **代码质量**：全量 TypeScript 类型检查通过，演示页面样式统一规范
+- 🧪 **环境变量架构**：迁移至 `envs/` 目录多环境配置 + `validateViteEnv` 构建期强校验
 
 <details>
 <summary><b>📆 查看历史版本记录 (v1.0 — v2.2)</b></summary>

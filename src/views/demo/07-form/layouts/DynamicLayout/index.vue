@@ -48,7 +48,7 @@
             @click="showPreview = false"
           >
             <template #icon>
-              <div class="i-mdi:close"></div>
+              <div class="i-mdi-close"></div>
             </template>
           </NButton>
         </template>
@@ -82,8 +82,8 @@
     type LabelPlacement,
     type DynamicFormConfig,
     type DynamicFieldConfig,
-    type ActionItem,
-  } from '@robot-admin/naive-ui-components'
+  } from '@robot-admin/naive-ui-components/C_Form'
+  import type { ActionItem } from '@robot-admin/naive-ui-components'
   import {
     DYNAMIC_FORM_CONFIG,
     BASE_FORM_OPTIONS,

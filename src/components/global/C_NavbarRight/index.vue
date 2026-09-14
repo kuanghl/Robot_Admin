@@ -12,7 +12,7 @@
     <!-- 全局搜索 -->
     <C_GlobalSearch :options="searchOptions" />
 
-    <!-- 操作按钮组：显式导入，不依赖 DynamicComponent -->
+    <!-- 操作按钮组：统一由组件解析器按需加载组件与样式 -->
     <div class="action-buttons">
       <!-- 通知中心 -->
       <C_NotificationCenter :on-navigate="handleNavigate" />
@@ -28,7 +28,7 @@
             @click="toggleFullscreen"
             class="action-btn"
           >
-            <span class="i-mdi:fullscreen"></span>
+            <span class="i-mdi-fullscreen"></span>
           </NButton>
         </template>
         <span>全屏</span>
@@ -92,7 +92,7 @@
           </div>
           <div class="user-dropdown">
             <span>{{ userName }}</span>
-            <span class="i-mdi:chevron-down dropdown-arrow"></span>
+            <span class="i-mdi-chevron-down dropdown-arrow"></span>
           </div>
         </div>
       </template>
@@ -112,11 +112,11 @@
           <div class="user-panel__info">
             <div class="user-panel__name">{{ userName }}</div>
             <div class="user-panel__role">
-              <span class="i-mdi:shield-account text-xs"></span>
+              <span class="i-mdi-shield-account text-xs"></span>
               {{ userRole }}
             </div>
             <div class="user-panel__email">
-              <span class="i-mdi:email-outline text-xs"></span>
+              <span class="i-mdi-email-outline text-xs"></span>
               {{ userEmail }}
             </div>
           </div>
@@ -149,7 +149,7 @@
               class="user-panel__item-icon"
             ></span>
             <span class="user-panel__item-label">{{ item.label }}</span>
-            <span class="i-mdi:chevron-right user-panel__item-arrow"></span>
+            <span class="i-mdi-chevron-right user-panel__item-arrow"></span>
           </div>
         </div>
 
@@ -184,7 +184,7 @@
             class="user-panel__item user-panel__item--danger"
             @click="handleLogout"
           >
-            <span class="i-mdi:logout user-panel__item-icon"></span>
+            <span class="i-mdi-logout user-panel__item-icon"></span>
             <span class="user-panel__item-label">退出登录</span>
           </div>
         </div>
@@ -202,19 +202,16 @@
   import { s_languageStore } from '@/stores/language'
   import { s_permissionStore } from '@/stores/permission'
   import { translateRouteTitle } from '@/utils/plugins/i18n-route'
-  import {
-    C_GlobalSearch,
-    type GlobalSearchOptions,
-    type SearchMenuItem,
+  import type {
+    GlobalSearchOptions,
+    SearchMenuItem,
   } from '@robot-admin/naive-ui-components/C_GlobalSearch'
-  import { C_NotificationCenter } from '@robot-admin/naive-ui-components/C_NotificationCenter'
-  import { C_Language } from '@robot-admin/naive-ui-components/C_Language'
-  import { C_Theme } from '@robot-admin/naive-ui-components/C_Theme'
+  import type { GuideStep } from '@robot-admin/naive-ui-components/C_Guide'
   import {
-    C_Guide,
-    type GuideStep,
-  } from '@robot-admin/naive-ui-components/C_Guide'
-  import { createMenuOptions } from '@robot-admin/naive-ui-components/C_Menu'
+    createMenuOptions,
+    type RouteItem,
+  } from '@robot-admin/naive-ui-components/C_Menu'
+  import type { MenuOptions } from '@/types/modules/menu'
   import type { MenuOption } from 'naive-ui/es'
   import packageJson from '../../../../package.json'
 
@@ -240,11 +237,9 @@
 
   // 用户名 / 角色 / 邮箱
   const userName = computed(() => userStore.userInfo?.username || 'CHENY')
-  const userRole = computed(
-    () => (userStore.userInfo as any)?.role || '系统管理员'
-  )
+  const userRole = computed(() => userStore.userInfo.role || '系统管理员')
   const userEmail = computed(
-    () => (userStore.userInfo as any)?.email || 'ycyplus@gmail.com'
+    () => userStore.userInfo.email || 'ycyplus@gmail.com'
   )
   const appVersion = packageJson.version
 
@@ -257,21 +252,21 @@
   }
 
   const primaryMenuItems: UserMenuItem[] = [
-    { key: 'profile', label: '个人中心', icon: 'i-mdi:account-circle-outline' },
-    { key: 'security', label: '安全设置', icon: 'i-mdi:shield-lock-outline' },
-    { key: 'activity', label: '操作日志', icon: 'i-mdi:history' },
+    { key: 'profile', label: '个人中心', icon: 'i-mdi-account-circle-outline' },
+    { key: 'security', label: '安全设置', icon: 'i-mdi-shield-lock-outline' },
+    { key: 'activity', label: '操作日志', icon: 'i-mdi-history' },
   ]
 
   const secondaryMenuItems: UserMenuItem[] = [
     {
       key: 'docs',
       label: '使用文档',
-      icon: 'i-mdi:book-open-page-variant-outline',
+      icon: 'i-mdi-book-open-page-variant-outline',
     },
     {
       key: 'feedback',
       label: '反馈建议',
-      icon: 'i-mdi:message-reply-text-outline',
+      icon: 'i-mdi-message-reply-text-outline',
     },
   ]
 
@@ -314,43 +309,83 @@
       },
     })
   }
-  /** 将权限菜单树扁平化为 SearchMenuItem[] */
+  /** 将 Naive UI 菜单节点收窄为全局搜索可消费的数据结构。 */
+  function toSearchMenuItem(item: MenuOption): SearchMenuItem | null {
+    if (
+      (typeof item.key !== 'string' && typeof item.key !== 'number') ||
+      typeof item.label !== 'string'
+    ) {
+      return null
+    }
+
+    const children = item.children
+      ?.map(toSearchMenuItem)
+      .filter((child): child is SearchMenuItem => child !== null)
+
+    return {
+      key: String(item.key),
+      label: item.label,
+      icon: item.icon,
+      ...(children?.length ? { children } : {}),
+    }
+  }
+
+  /** 将权限菜单树扁平化为 SearchMenuItem[]。 */
   function flattenMenuItems(items: MenuOption[]): SearchMenuItem[] {
     const result: SearchMenuItem[] = []
     for (const item of items) {
-      if (item.key && item.label) {
-        result.push({
-          key: item.key as string,
-          label: item.label as string,
-          icon: item.icon,
-          children: item.children?.length
-            ? flattenMenuItems(item.children as MenuOption[])
-            : undefined,
-        })
-      }
+      const searchItem = toSearchMenuItem(item)
+      if (searchItem) result.push(searchItem)
       if (item.children?.length) {
-        result.push(...flattenMenuItems(item.children as MenuOption[]))
+        result.push(...flattenMenuItems(item.children))
       }
     }
     return result
   }
 
+  /** 将应用菜单路由转换为组件库公开的最小路由契约。 */
+  function toRouteItems(items: MenuOptions[]): RouteItem[] {
+    return items.flatMap(item => {
+      if (!item.path) return []
+
+      const children = item.children?.length
+        ? toRouteItems(item.children)
+        : undefined
+
+      return [
+        {
+          path: item.path,
+          name: item.name,
+          component: item.component,
+          redirect: item.redirect,
+          meta: item.meta,
+          type: item.type,
+          disabled: item.disabled,
+          ...(children?.length ? { children } : {}),
+        },
+      ]
+    })
+  }
+
+  /** 使用统一边界适配权限菜单，避免调用处重复做不安全断言。 */
+  const createSearchMenuOptions = (): MenuOption[] =>
+    createMenuOptions(toRouteItems(permissionStore.showMenuListGet), {
+      labelFormatter: translateRouteTitle,
+    })
+
+  const normalizeMenuKey = (key: unknown): string | null =>
+    typeof key === 'string' || typeof key === 'number' ? String(key) : null
+
   /** 在菜单树中找到父级的第一个子路由 key */
   function findFirstChildKey(parentKey: string): string | null {
-    const normalized = createMenuOptions(
-      permissionStore.showMenuListGet as any[],
-      {
-        labelFormatter: translateRouteTitle,
-      }
-    )
+    const normalized = createSearchMenuOptions()
     const find = (nodes: MenuOption[]): string | null => {
       for (const n of nodes) {
-        if (n.key === parentKey && n.children?.length)
-          return (n.children[0]?.key as string) || null
-        if (n.children?.length) {
-          const r = find(n.children)
-          if (r) return r
+        if (String(n.key) === parentKey && n.children?.length) {
+          return normalizeMenuKey(n.children[0]?.key)
         }
+        const nestedKey = n.children?.length ? find(n.children) : null
+        if (nestedKey) return nestedKey
       }
       return null
     }
@@ -358,12 +393,7 @@
   }
 
   const searchOptions: GlobalSearchOptions = {
-    menuItems: () =>
-      flattenMenuItems(
-        createMenuOptions(permissionStore.showMenuListGet as any[], {
-          labelFormatter: translateRouteTitle,
-        })
-      ),
+    menuItems: () => flattenMenuItems(createSearchMenuOptions()),
     isDark: () => themeStore.isDark,
     /** 选中菜单项后跳转路由 */
     onSelect(key: string, hasChildren: boolean) {

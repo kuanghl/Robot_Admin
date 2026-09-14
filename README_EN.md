@@ -63,9 +63,9 @@
     <a href="https://github.com/ChenyCHENYU/robot_admin/actions"><img src="https://img.shields.io/github/actions/workflow/status/ChenyCHENYU/robot_admin/main.yml" alt="Build Status"></a>
     <a href="https://standardjs.com"><img src="https://img.shields.io/badge/code_style-standard-brightgreen" alt="Code Style"></a>
     <img src="https://img.shields.io/badge/bun-%E2%89%A51.3.x-ff1e56?style=flat&logo=bun" alt="Bun Version">
-    <img src="https://img.shields.io/badge/vue-3.5.13-4FC08D?style=flat&logo=vue.js" alt="Vue Version">
-    <img src="https://img.shields.io/badge/typescript-5.8.0-blue?style=flat&logo=typescript" alt="TypeScript Version">
-    <img src="https://img.shields.io/badge/vite-8.0.3-646CFF?style=flat&logo=vite" alt="Vite Version">
+    <img src="https://img.shields.io/badge/vue-3.5.42-4FC08D?style=flat&logo=vue.js" alt="Vue Version">
+    <img src="https://img.shields.io/badge/typescript-5.8.3-blue?style=flat&logo=typescript" alt="TypeScript Version">
+    <img src="https://img.shields.io/badge/vite-8.2.2-646CFF?style=flat&logo=vite" alt="Vite Version">
   </p>
   <p>
     <img src="https://img.shields.io/badge/components-51+-success?style=flat" alt="Components">
@@ -174,7 +174,7 @@ bun install
 bun run dev
 ```
 
-**🔥 First startup takes less than 2 seconds, subsequent hot updates under 100ms!**
+**🔥 With the dependency cache ready, the dev server starts in about 3 seconds and keeps millisecond-level updates!**
 
 <details>
 <summary><b>📦 More Commands</b></summary>
@@ -182,6 +182,7 @@ bun run dev
 ```bash
 # Development
 bun run dev            # Start development environment
+bun run dev:banner     # Opt in to the full Git branch banner (adds startup latency)
 bun run build          # Production build
 bun run build:test     # Test environment build
 bun run build:staging  # Staging build
@@ -208,9 +209,9 @@ bun run commit         # Standardized commit (git cz)
 
 ### 🔐 Authentication Mock and Backend Switching
 
-Until a backend is available, the project uses a closed-loop authentication Mock by default. Login, token refresh, and user data keep the same response contract as the remote API. Any non-empty username and password can sign in; Mock tokens are random opaque values and never embed plaintext credentials.
+Development and test builds use closed-loop authentication and business-data Mocks by default. Login, token refresh, and user data keep the same response contract as the remote API. Any non-empty username and password can sign in; Mock tokens are random opaque values and never embed plaintext credentials. The public demo must opt in with `VITE_DEPLOYMENT_PROFILE=demo`; real applications use the `application` profile and remote APIs.
 
-To connect a backend, set `VITE_AUTH_MODE=remote` and configure the endpoint through `VITE_API_BASE`. No page or store changes are required. The contract lives in `src/api/auth.contract.ts`, and the Mock implementation lives in `src/api/auth.mock.ts`.
+To connect a backend, set `VITE_DEPLOYMENT_PROFILE=application`, `VITE_AUTH_MODE=remote`, and `VITE_DATA_MODE=remote`, then configure the endpoint through `VITE_API_BASE`. Production and staging application builds reject Mock mode; only an explicit `demo` profile permits it. No page or store changes are required. The contract lives in `src/api/auth.contract.ts`, and the Mock implementation lives in `src/api/auth.mock.ts`.
 
 ---
 
@@ -223,28 +224,31 @@ To connect a backend, set `VITE_AUTH_MODE=remote` and configure the endpoint thr
 
 **🎭 Frontend Core**
 
-- **Vue 3.5.42** - 🔥 Latest stable version, silky Composition API experience
-- **TypeScript 5.8.3** - 🛡️ Type safety, intelligent hints
+- **Vue 3.5.42** - 🔥 Stable Composition API runtime
+- **TypeScript 5.8** - 🛡️ Type safety, intelligent hints
+- **Pinia 4.0.3** - 🍍 Type-safe modular state management
+- **Vue Router 5.3.1** - 🧭 Navigation guards and dynamic routes
+- **VueUse 14.4.0** - 🧰 On-demand composition utilities
 - **Naive UI 2.45.3** - 🎨 Component library with both beauty and performance
 - **@robot-admin/naive-ui-components** - 🧩 51+ business components, auto-import on demand
-- **UnoCSS 66.3.3** - ⚡ Atomic CSS, on-demand generation, minimal size
+- **UnoCSS 66.10** - ⚡ Atomic CSS, on-demand generation, minimal size
 
 **⚙️ Build Tools**
 
-- **Bun 1.x** - 🚀 Performance monster, 10x installation speed
-- **Vite 7.0.0** - ⚡ Next-generation build tool, lightning hot updates
-- **Sass 1.87** - 🎨 Mature CSS preprocessor
+- **Bun 1.3.x** - 🚀 Fast package manager and JavaScript runtime
+- **Vite 8.2.2** - ⚡ Unified Rolldown build engine and fast hot updates
+- **Sass 1.104** - 🎨 Mature CSS preprocessor
 
 **🔧 Development Tools**
 
-- **ESLint 9.21** - 📏 Code quality guardian
-- **Prettier 3.5** - ✨ Code formatting
-- **Oxlint 0.15** - 🦀 Ultra-fast Linter written in Rust
-- **Vitest 3.0** - 🧪 Modern testing framework
+- **ESLint 10.9** - 📏 Code quality guardian
+- **Prettier 3.9** - ✨ Code formatting
+- **Oxlint 1.81** - 🦀 Ultra-fast Linter written in Rust
+- **Bun Test 1.3** - 🧪 Test runtime aligned with the package manager
 
 **📊 Functional Components**
 
-- **ECharts 5.6** - Enterprise-grade chart library
+- **ECharts 6.1** - Enterprise-grade chart library
 - **AntV X6** - Professional flowchart engine
 - **FullCalendar** - Complete calendar management
 - **WangEditor** - Rich text editor
@@ -719,15 +723,14 @@ location / {
 <details>
 <summary><b>✅ Completed Milestones</b></summary>
 
-| Version | Date       | Highlights                                                          |
-| ------- | ---------- | ------------------------------------------------------------------- |
-| v1.0.0  | 2025-11    | First release, Vue 3 + Naive UI core architecture                   |
-| v1.13.0 | 2026-01    | 45+ components, 11 directives, 7 packages                           |
-| v1.14.0 | 2026-02    | Monorepo + Micro-frontend dual architecture, Bun migration          |
-| v2.0.0  | 2026-03-01 | **Breaking** - Single-app restructure, Vite 8, 51+ components       |
-| v2.1.0  | 2026-03-06 | SaaS extension, multi-app scaffold                                  |
-| v2.2.0  | 2026-03-11 | Layout v2.2.0, env-manager v1.0.5, Robot CLI ✅                     |
-| v2.5.0  | 2026-09-04 | Full dependency upgrade: Vue 3.5.42, Vite 8.2.2, components v0.11.6 |
+| Version | Date       | Highlights                                                    |
+| ------- | ---------- | ------------------------------------------------------------- |
+| v1.0.0  | 2025-11    | First release, Vue 3 + Naive UI core architecture             |
+| v1.13.0 | 2026-01    | 45+ components, 11 directives, 7 packages                     |
+| v1.14.0 | 2026-02    | Monorepo + Micro-frontend dual architecture, Bun migration    |
+| v2.0.0  | 2026-03-01 | **Breaking** - Single-app restructure, Vite 8, 51+ components |
+| v2.1.0  | 2026-03-06 | SaaS extension, multi-app scaffold                            |
+| v2.2.0  | 2026-03-11 | Layout v2.2.0, env-manager v1.0.5, Robot CLI ✅               |
 
 </details>
 
@@ -750,16 +753,16 @@ location / {
 
 ### 🔗 Core Packages (@robot-admin)
 
-| Package                                                                               | Version                                                               | Description                |
-| ------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | -------------------------- |
-| [naive-ui-components](https://www.npmjs.com/package/@robot-admin/naive-ui-components) | ![npm](https://img.shields.io/npm/v/@robot-admin/naive-ui-components) | 51+ business components    |
-| [layout](https://www.npmjs.com/package/@robot-admin/layout)                           | ![npm](https://img.shields.io/npm/v/@robot-admin/layout)              | 6 layout modes             |
-| [request-core](https://www.npmjs.com/package/@robot-admin/request-core)               | ![npm](https://img.shields.io/npm/v/@robot-admin/request-core)        | Axios + useTableCrud       |
-| [form-validate](https://www.npmjs.com/package/@robot-admin/form-validate)             | ![npm](https://img.shields.io/npm/v/@robot-admin/form-validate)       | 48+ validation rules       |
-| [directives](https://www.npmjs.com/package/@robot-admin/directives)                   | ![npm](https://img.shields.io/npm/v/@robot-admin/directives)          | 11 Vue directives          |
-| [file-utils](https://www.npmjs.com/package/@robot-admin/file-utils)                   | ![npm](https://img.shields.io/npm/v/@robot-admin/file-utils)          | Excel / ZIP / chunk upload |
-| [theme](https://www.npmjs.com/package/@robot-admin/theme)                             | ![npm](https://img.shields.io/npm/v/@robot-admin/theme)               | Light / Dark / System      |
-| [git-standards](https://www.npmjs.com/package/@robot-admin/git-standards)             | ![npm](https://img.shields.io/npm/v/@robot-admin/git-standards)       | Git engineering standards  |
+| Package                                                                               | Version                                                               | Description                         |
+| ------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | ----------------------------------- |
+| [naive-ui-components](https://www.npmjs.com/package/@robot-admin/naive-ui-components) | ![npm](https://img.shields.io/npm/v/@robot-admin/naive-ui-components) | 51+ business components             |
+| [layout](https://www.npmjs.com/package/@robot-admin/layout)                           | ![npm](https://img.shields.io/npm/v/@robot-admin/layout)              | 6 layouts + compact context adapter |
+| [request-core](https://www.npmjs.com/package/@robot-admin/request-core)               | ![npm](https://img.shields.io/npm/v/@robot-admin/request-core)        | Axios + useTableCrud                |
+| [form-validate](https://www.npmjs.com/package/@robot-admin/form-validate)             | ![npm](https://img.shields.io/npm/v/@robot-admin/form-validate)       | 48+ validation rules                |
+| [directives](https://www.npmjs.com/package/@robot-admin/directives)                   | ![npm](https://img.shields.io/npm/v/@robot-admin/directives)          | 11 Vue directives                   |
+| [file-utils](https://www.npmjs.com/package/@robot-admin/file-utils)                   | ![npm](https://img.shields.io/npm/v/@robot-admin/file-utils)          | Excel / ZIP / chunk upload          |
+| [theme](https://www.npmjs.com/package/@robot-admin/theme)                             | ![npm](https://img.shields.io/npm/v/@robot-admin/theme)               | Light / Dark / System               |
+| [git-standards](https://www.npmjs.com/package/@robot-admin/git-standards)             | ![npm](https://img.shields.io/npm/v/@robot-admin/git-standards)       | Git engineering standards           |
 
 ### 🛠️ Related Projects
 
@@ -779,7 +782,6 @@ location / {
 
 - **[vite-console-plugin](https://www.npmjs.com/package/vite-console-plugin)** `v2.0.16` - Vite console beautification plugin
 - **[ts-type-cleaner](https://www.npmjs.com/package/ts-type-cleaner)** `v5.1.0` - TypeScript type analysis & cleanup tool
-- **[robot-admin-env-manager](https://www.npmjs.com/package/robot-admin-env-manager)** `v1.1.0` - Multi-env configuration manager
 - **[vite-plugin-preloader](https://www.npmjs.com/package/vite-plugin-preloader)** `v2.0.1` - Smart route preloader
 - **[git-branch-check-diff-commits](https://www.npmjs.com/package/git-branch-check-diff-commits)** `v1.3.0` - Branch diff checker
 
@@ -829,8 +831,8 @@ location / {
 
 ### 🔧 Development Environment
 
-- **Node.js**: >= 20.19.0 (Recommended 22.12+)
-- **Bun**: >= 1.2.19 (Recommended latest)
+- **Node.js**: >= 22.18 (latest LTS recommended)
+- **Bun**: >= 1.3.14 (latest version recommended)
 - **Memory**: >= 8GB RAM
 - **Storage**: >= 1GB available space
 - **OS**: Windows 10+, macOS 12+, Ubuntu 20.04+
@@ -925,24 +927,24 @@ bun run type-build
 <details>
 <summary><b>Why Choose Robot Admin?</b></summary>
 
-|  Feature Comparison   |        Robot Admin         |     Ant Design Pro     |   Vue Element Admin    |   Other Frameworks    |
-| :-------------------: | :------------------------: | :--------------------: | :--------------------: | :-------------------: |
-|   🚀 Startup Speed    |      **Bun < 100ms**       |        npm ~2s         |       yarn ~1.5s       |    Generally slow     |
-|     ⚡ Hot Reload     |    **< 100ms Instant**     |       ~1.5s wait       |        ~1s wait        |    Generally slow     |
-|     📦 Build Tool     |    **Vite 7.x Latest**     |      Webpack/Vite      |      Webpack 4/5       |     Various tools     |
-|     🎨 UI Library     |  **Naive UI Lightweight**  |       Ant Design       |      Element Plus      |    Various choices    |
-|     💪 TypeScript     | **Complete Type Support**  |     Basic support      |     Basic support      |        Varies         |
-| 🔧 Custom Directives  | **7 Practical Directives** |     Few directives     |    Basic directives    | Limited functionality |
-|     📊 Demo Pages     | **36+ Complete Examples**  |    Limited examples    |    Limited examples    |    Basic examples     |
-|   🎯 Learning Curve   |    **Medium Friendly**     |      High barrier      |     Medium barrier     |    Varies greatly     |
-| 📈 Maintenance Status | **🔥 Active Maintenance**  | Continuous maintenance | Continuous maintenance |        Varies         |
+|  Feature Comparison   |          Robot Admin          |     Ant Design Pro     |   Vue Element Admin    |   Other Frameworks    |
+| :-------------------: | :---------------------------: | :--------------------: | :--------------------: | :-------------------: |
+|   🚀 Startup Speed    | **~3s warm start (measured)** |   Project-dependent    |   Project-dependent    |   Project-dependent   |
+|     ⚡ Hot Reload     |      **< 100ms Instant**      |       ~1.5s wait       |        ~1s wait        |    Generally slow     |
+|     📦 Build Tool     |    **Vite 8.x (Rolldown)**    |      Webpack/Vite      |      Webpack 4/5       |     Various tools     |
+|     🎨 UI Library     |   **Naive UI Lightweight**    |       Ant Design       |      Element Plus      |    Various choices    |
+|     💪 TypeScript     |   **Complete Type Support**   |     Basic support      |     Basic support      |        Varies         |
+| 🔧 Custom Directives  |  **7 Practical Directives**   |     Few directives     |    Basic directives    | Limited functionality |
+|     📊 Demo Pages     |   **54+ Complete Examples**   |    Limited examples    |    Limited examples    |    Basic examples     |
+|   🎯 Learning Curve   |      **Medium Friendly**      |      High barrier      |     Medium barrier     |    Varies greatly     |
+| 📈 Maintenance Status |   **🔥 Active Maintenance**   | Continuous maintenance | Continuous maintenance |        Varies         |
 
 **Reasons to Choose Robot Admin**:
 
-- 🚀 **Performance First**: Bun + Vite7 dual engine, ultimate development experience
-- 🧩 **Rich Components**: 37+ business components, ready to use
+- 🚀 **Performance First**: Bun + Vite 8 (Rolldown), with an approximately 3-second warm dev-server start after dependency caching
+- 🧩 **Rich Components**: 51+ business components, imported on demand
 - 🎨 **Modern Design**: Naive UI + UnoCSS, beauty and performance coexist
-- 📚 **Learning Friendly**: 36+ demo pages, each is best practice
+- 📚 **Learning Friendly**: 54+ demo pages with practical examples
 
 </details>
 
@@ -1081,7 +1083,7 @@ Thanks to all developers who contributed to this project:
 ### v2.0.0 (2026-03-01) — Breaking Change
 
 - 🔄 Single-app architecture restructured (main/dev branches)
-- ⚡ Upgraded Vite 8.0.1, Bun 1.x
+- ⚡ Adopted the Vite 8 and Bun 1.x toolchain
 - 🧩 Components upgraded to 51+
 - 📐 UnoCSS presetWind3 migration
 - 🗑️ Removed legacy code, modular refactor

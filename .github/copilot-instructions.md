@@ -50,16 +50,16 @@ Robot Admin 是一个**企业级后台管理系统**生态，由 4 个关联仓�
 
 ### 自有包生态（@robot-admin/\*）
 
-| 包名                               | 版本   | 功能                            |
-| ---------------------------------- | ------ | ------------------------------- |
-| `@robot-admin/naive-ui-components` | 0.10.3 | 51+ 个业务组件                  |
-| `@robot-admin/layout`              | 2.3.2  | 6 种布局 + 安全设置管理         |
-| `@robot-admin/request-core`        | 0.2.0  | Axios + 6 类插件 + useTableCrud |
-| `@robot-admin/theme`               | 0.4.0  | 主题切换 + 安全持久化           |
-| `@robot-admin/directives`          | 1.1.1  | 11 个 Vue 指令                  |
-| `@robot-admin/form-validate`       | 2.0.0  | 48+ 验证规则                    |
-| `@robot-admin/file-utils`          | 2.0.0  | 文件处理（Excel/ZIP/CSV/分片）  |
-| `@robot-admin/git-standards`       | 1.0.4  | Git 工程化标准                  |
+| 包名                               | 版本   | 功能                                  |
+| ---------------------------------- | ------ | ------------------------------------- |
+| `@robot-admin/naive-ui-components` | 0.11.6 | 51+ 个业务组件                        |
+| `@robot-admin/layout`              | 3.2.1  | 6 种布局 + 精简适配 + 核心协议        |
+| `@robot-admin/request-core`        | 0.5.0  | 实例化请求编排 + 函数式 Headless CRUD |
+| `@robot-admin/theme`               | 0.5.1  | 分层核心 + Vue Store + Naive UI 适配  |
+| `@robot-admin/directives`          | 2.0.1  | 11 个 Vue 指令                        |
+| `@robot-admin/form-validate`       | 3.4.2  | 双框架验证、组合与批量校验            |
+| `@robot-admin/file-utils`          | 3.0.1  | 文件处理（Excel/ZIP/CSV/分片）        |
+| `@robot-admin/git-standards`       | 1.0.5  | Git 工程化标准                        |
 
 ### 开发工具链
 
@@ -99,7 +99,7 @@ pnpm install
 | `bun run dev:local`      | 本地包调试   | `USE_LOCAL_PACKAGES=true`   |
 | `bun run dev:components` | 组件库联调   | `USE_LOCAL_COMPONENTS=true` |
 | `bun run dev:devtools`   | Vue DevTools | `VITE_DEVTOOLS=true`        |
-| `bun run build`          | 生产构建     | env-manager prod 模式       |
+| `bun run build`          | 生产构建     | Vite production 模式        |
 | `bun run build:test`     | 测试构建     | `--mode test`               |
 | `bun run build:staging`  | 预发构建     | `--mode staging --profile`  |
 | `bun run lint`           | 代码检查     | Oxlint → ESLint 双重检查    |
@@ -186,7 +186,6 @@ Robot_Admin/
 │   │   ├── layout.ts              # 布局系统
 │   │   ├── naive-ui-plugin.ts     # 全局通知服务
 │   │   ├── highlight.ts           # 代码高亮（异步）
-│   │   ├── markdown.ts            # Markdown（异步懒加载）
 │   │   ├── analytics.ts           # Vercel 分析（仅生产）
 │   │   └── index.ts               # 统一导出
 │   │
@@ -241,7 +240,7 @@ Robot_Admin/
 ├── scripts/                       # 构建脚本
 ├── docs/                          # 项目分析文档
 ├── eslint.config.ts               # ESLint Flat Config
-├── commitlint.config.js           # 提交规范
+├── commitlint.config.cjs          # 提交规范
 ├── unocss.config.ts               # UnoCSS 配置
 ├── vite.config.ts                 # Vite 配置
 ├── tsconfig.json                  # TypeScript 配置
@@ -308,7 +307,7 @@ Robot_Admin/
 ```typescript
 // 1. 外部样式
 import '@robot-admin/layout/style'
-import '@robot-admin/naive-ui-components/style.css'
+import '@robot-admin/naive-ui-components/C_Editor/style.css' // 动态编辑器页面显式加载重型样式
 import 'virtual:uno.css'
 
 // 2. Vue 核心
@@ -322,7 +321,7 @@ import { storeToRefs } from 'pinia'
 import { NCard, NButton, NSpace } from 'naive-ui'
 
 // 5. 自有包
-import { postData, getData } from '@robot-admin/request-core'
+import { postData, getData } from '@robot-admin/request-core/axios'
 import { PRESET_RULES } from '@robot-admin/form-validate'
 
 // 6. 项目内部（使用路径别名）
@@ -701,9 +700,7 @@ export const formOptions: FormOption[] = [
 // Mock 数据工厂
 export const testDataConfig = {
   getTestData(layout: string) {
-    return {
-      /* ... */
-    }
+    return {/* ... */}
   },
 }
 ```
@@ -768,7 +765,7 @@ export const s_userStore = defineStore('user', {
   actions: {
     setToken(token: string) {
       this.token = token
-      localStorage.setItem(TOKEN, JSON.stringify(token))
+      sessionStorage.setItem(TOKEN, JSON.stringify(token))
     },
 
     async logout(isExpired = false) {
@@ -782,7 +779,7 @@ export const s_userStore = defineStore('user', {
 
 1. **命名**：`s_` 前缀 + 描述 + `Store` 后缀（`s_userStore`, `s_themeStore`）
 2. **文件位置**：`src/stores/<domain>/index.ts`
-3. **持久化**：使用 `pinia-plugin-persistedstate`（已全局配置）
+3. **持久化**：主题、语言等偏好可持久化；Token、刷新令牌和用户会话只允许使用 `sessionStorage`，禁止存储密码
 4. **区块注释**：使用 `// ============ 状态 ============` 分隔不同关注点
 5. **类型安全**：State 中的复杂对象必须定义 interface
 
@@ -794,7 +791,7 @@ export const s_userStore = defineStore('user', {
 
 ```typescript
 // src/api/auth.ts
-import { postData, getData } from '@robot-admin/request-core'
+import { postData, getData } from '@robot-admin/request-core/axios'
 import type { PostAuthLoginResponse } from './generated'
 
 /**
@@ -817,58 +814,41 @@ export const getAuthMenuListApi = () =>
 
 ```typescript
 // src/plugins/request-core.ts
-import { createRequestCore } from '@robot-admin/request-core'
+import { createRequestClient } from '@robot-admin/request-core/axios'
+import { createRequestPlugin } from '@robot-admin/request-core/vue'
+
+export const request = createRequestClient({
+  request: { baseURL: VITE_API_BASE, timeout: 10_000 },
+  setAsDefault: true, // 让既有 getData/postData 复用同一实例
+  auth: {
+    getToken: () => s_userStore().token,
+    shouldRefresh: () => s_userStore().isTokenExpiringSoon(),
+    refresh: refreshAccessToken,
+    reauthenticate: waitForUserReLogin,
+    isAuthRequest: config => config.url?.startsWith('/auth/') === true,
+  },
+})
 
 export function setupRequestCore(app: App) {
-  const requestCore = createRequestCore({
-    request: {
-      baseURL: VITE_API_BASE,
-      timeout: 10000,
-      headers: { 'Content-Type': 'application/json' },
-    },
-    interceptors: {
-      request: config => {
-        // 注入 token
-        const { token } = s_userStore()
-        if (token) config.headers.Authorization = `Bearer ${token}`
-        return config
-      },
-      response: response => {
-        // 业务码判断
-        const { code, message: msg } = response.data
-        const isSuccess =
-          code === 200 || code === 0 || code === '200' || code === '0'
-        if (!isSuccess) return Promise.reject(new Error(msg))
-        return response
-      },
-      responseError: async error => {
-        // 401 → 重新登录弹窗
-        if (error.response?.status === 401) {
-          reLoginStore.show(userStore.userInfo?.username || '')
-          // ... 等待重新登录
-        }
-        return Promise.reject(error)
-      },
-    },
-  })
+  app.use(createRequestPlugin(request))
 }
 ```
 
 ### useTableCrud 表格数据管理
 
 ```typescript
-import { useTableCrud } from '@robot-admin/request-core'
+import { useTableCrud } from '@robot-admin/request-core/vue'
 
 const table = useTableCrud({
   api: {
     list: '/api/employees',
     create: '/api/employees',
     update: '/api/employees/:id',
-    delete: '/api/employees/:id',
-    detail: '/api/employees/:id',
+    remove: '/api/employees/:id',
+    get: '/api/employees/:id',
   },
   columns: [...],
-  pagination: { pageSize: 20 },
+  defaultPageSize: 20,
 })
 
 // 模板中
@@ -989,12 +969,15 @@ Token 超时（8小时无活跃） → 重新登录对话框
 Layer 1: Design Tokens (src/config/theme/tokens.ts)
   → 定义原始颜色、间距常量
   ↓
-Layer 2: @robot-admin/theme (Light/Dark/System)
-  → 基础主题模式管理
+Layer 2: @robot-admin/theme/naive (Light/Dark/System + Design Style)
+  → 模式、设计风格、持久化、跨标签同步与 Naive UI 适配
   ↓
 Layer 3: s_themeStore (Naive UI 集成扩展)
-  → 合并 themeOverrides → NConfigProvider 注入
+  → 仅组合项目 Token、布局设置和菜单呈现 → NConfigProvider 注入
 ```
+
+主题生命周期由 `setupThemeSystem()` 集中管理，业务组件不要重复调用 `init()`；完整
+接入与持久化所有权见 `docs/design-system/THEME-ARCHITECTURE.md`。
 
 ---
 
@@ -1200,7 +1183,7 @@ src/types/components.d.ts
 manualChunks: {
   'vue-vendor':      ['vue', 'vue-router', 'pinia'],
   'ui-vendor':       ['naive-ui'],
-  'editor-vendor':   ['@kangc/v-md-editor', 'highlight.js'],
+  // 编辑器跟随各自动态路由拆分，避免不同编辑器互相捆绑加载
   'office-vendor':   ['xlsx', 'mammoth'],
   'calendar-vendor': ['FullCalendar 全家桶'],
   'spline-vendor':   ['@splinetool/runtime'],
@@ -1273,8 +1256,11 @@ dist/
 ├── resolver.js       # 自动导入解析器
 ├── style.css         # 全量样式
 ├── C_Form.js         # 按需入口
-├── C_Form.css        # 按需样式
-├── C_Table.js        # ...
+├── C_Form.base.css   # 表单基础样式（resolver 默认注入）
+├── C_Form.css        # 表单完整样式（含动态字段依赖）
+├── C_Table.base.css  # 表格基础样式（resolver 默认注入）
+├── C_Table.css       # 表格完整样式（含动态详情依赖）
+├── C_Editor.css      # 编辑器样式（含第三方运行时样式）
 └── ...
 ```
 
@@ -1334,7 +1320,7 @@ PRESET_RULES.ip('IP') // IP 地址
 ### @robot-admin/request-core — 请求方法
 
 ```typescript
-import { getData, postData, putData, deleteData } from '@robot-admin/request-core'
+import { getData, postData, putData, deleteData } from '@robot-admin/request-core/axios'
 
 // CRUD 快捷方法
 getData<T>(url, params?)       // GET 请求
@@ -1343,8 +1329,9 @@ putData<T>(url, data?)         // PUT 请求
 deleteData<T>(url, params?)    // DELETE 请求
 
 // 表格 CRUD
-import { useTableCrud } from '@robot-admin/request-core'
-const table = useTableCrud({ api, columns, pagination })
+import { createTableCrud, useTableCrud } from '@robot-admin/request-core/vue'
+const useAppTable = createTableCrud({ client: request, autoLoad: 'mounted' })
+const table = useAppTable({ api, columns, defaultPageSize: 20 })
 ```
 
 ### @robot-admin/layout — 布局模式
@@ -1357,6 +1344,10 @@ const table = useTableCrud({ api, columns, pagination })
 | `mix-top`                | 左侧图标 + 顶部菜单   |
 | `reverse-horizontal-mix` | 顶部横向 + 右侧栏     |
 | `card-layout`            | 卡片 hover + 网格抽屉 |
+
+普通宿主使用 `createLayoutContext()` 从设置 Store、菜单和主题状态生成标准上下文；
+仅在高级定制时手工实现完整 `LayoutContext`。`SettingsDrawer` 必须放在应用根部已有的
+`NMessageProvider` 与 `NDialogProvider` 下，缓存清理由宿主白名单动作负责。
 
 ### @robot-admin/file-utils — 文件处理
 
@@ -1425,9 +1416,13 @@ NaiveUiResolver（Naive UI 原生组件）
 import './assets/css/main.css' // 基础重置
 import '@/styles/index.scss' // 全局样式
 import '@robot-admin/layout/style' // 布局系统样式
-import '@robot-admin/naive-ui-components/style.css' // 组件库样式
 import 'virtual:uno.css' // UnoCSS（最高优先级）
 ```
+
+业务组件样式由 `RobotNaiveUiResolver({ importStyle: 'base' })` 按需注入，禁止在
+`main.ts` 常驻导入整包 `style.css`。动态编辑器等 resolver 无法静态发现的重型组件，
+只在对应路由页面显式导入，例如
+`@robot-admin/naive-ui-components/C_Editor/style.css`。
 
 ### 5. Store 命名约定
 

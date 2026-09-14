@@ -7,6 +7,7 @@
  */
 
 import type { PostAuthLoginResponse } from './generated'
+import type { DeploymentProfile } from '@/config/dataMode'
 
 /** 认证运行模式 */
 export type AuthMode = 'mock' | 'remote'
@@ -46,6 +47,25 @@ export interface RefreshTokenResponse {
   msg?: string
 }
 
-/** 将环境变量收敛为受支持的认证模式，缺省保留 Mock 闭环 */
-export const resolveAuthMode = (mode?: string): AuthMode =>
-  mode === 'remote' ? 'remote' : 'mock'
+/**
+ * @description 将环境变量收敛为受支持的认证模式；业务生产/预发缺省走远端并禁止 Mock。
+ * @param mode 认证模式环境变量
+ * @param appEnv 当前应用环境
+ * @param deploymentProfile 部署用途，公开演示允许闭环 Mock
+ * @returns 有效的认证模式
+ */
+export const resolveAuthMode = (
+  mode?: string,
+  appEnv?: string,
+  deploymentProfile: DeploymentProfile = 'application'
+): AuthMode => {
+  const isRemoteEnvironment =
+    (appEnv === 'production' || appEnv === 'staging') &&
+    deploymentProfile !== 'demo'
+
+  if (isRemoteEnvironment && mode === 'mock') {
+    throw new Error(`${appEnv} 环境禁止使用 Mock 认证`)
+  }
+  if (mode === 'remote' || mode === 'mock') return mode
+  return isRemoteEnvironment ? 'remote' : 'mock'
+}
