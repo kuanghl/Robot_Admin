@@ -18,18 +18,17 @@ import { s_permissionStore } from '@/stores/permission'
 import { preloadAuthenticatedShell } from '@/router/authenticatedShell'
 import { message } from '@/plugins/discrete'
 import { setupNProgress } from '@/plugins/nprogress'
-import {
-  NavigationFailureType,
-  isNavigationFailure,
-  type NavigationFailure,
-  type NavigationGuardReturn,
-  type RouteLocationNormalized,
-  type RouteMeta,
+import type {
+  NavigationGuardReturn,
+  RouteLocationNormalized,
+  RouteMeta,
 } from 'vue-router'
 const nprogress = setupNProgress()
 const WHITE_LIST = ['/login', '/404', '/401']
 const LOGIN_PATH = '/login'
 const DEFAULT_TITLE = 'Robot Admin'
+const ROUTE_MODULE_LOAD_ERROR_RE =
+  /Failed to fetch dynamically imported module|Importing a module script failed|Loading chunk|ChunkLoadError/i
 
 let dynamicRouterInitPromise: Promise<boolean> | null = null
 
@@ -197,8 +196,15 @@ router.onError((error: Error) => {
     console.error('🔥 路由错误:', error)
   }
 
-  if (error.message.includes('Loading chunk')) {
-    window.location.reload()
+  if (ROUTE_MODULE_LOAD_ERROR_RE.test(error.message)) {
+    // 生产部署后若 HTML 仍引用旧 chunk，刷新即可恢复；开发环境刷新无法
+    // 修复服务未监听，保留现场并给出准确提示，避免进入刷新循环。
+    if (import.meta.env.PROD) {
+      window.location.reload()
+      return
+    }
+
+    message.error('页面模块连接失败，请确认本地服务正常后重试')
     return
   }
 
@@ -210,20 +216,11 @@ router.afterEach((_to, _from, failure) => {
   // afterEach 在异步路由组件解析完成后触发，进度条覆盖真实页面加载周期
   nprogress.done()
 
-  if (!failure) {
-    return
-  }
+  const expectedNavigationInterruption =
+    failure &&
+    /Avoided redundant navigation|Navigation cancelled/i.test(failure.message)
 
-  // 重复导航（已在当前路由时再次跳转到同一位置）属于预期内的无害操作，不视为错误
-  const isDuplicated = isNavigationFailure(
-    failure,
-    NavigationFailureType.duplicated
-  )
-  if (isDuplicated) {
-    return
-  }
-
-  if (import.meta.env.DEV) {
-    console.error('❌ 路由跳转失败:', (failure as NavigationFailure).message)
+  if (import.meta.env.DEV && failure && !expectedNavigationInterruption) {
+    console.error('❌ 路由跳转失败:', failure.message)
   }
 })

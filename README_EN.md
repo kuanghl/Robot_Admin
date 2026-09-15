@@ -183,6 +183,9 @@ bun run dev
 # Development
 bun run dev            # Start development environment
 bun run dev:banner     # Opt in to the full Git branch banner (adds startup latency)
+bun run dev:components # Use local naive-ui-components source for integration work
+bun run dev:table      # Use local MachTable, component, and request-core source
+bun run dev:local      # Use all local packages, component source, and MachTable source
 bun run build          # Production build
 bun run build:test     # Test environment build
 bun run build:staging  # Staging build
@@ -202,6 +205,13 @@ bun run type-build     # Full type checking
 # Others
 bun run commit         # Standardized commit (git cz)
 ```
+
+Local integration commands use exact Vite aliases for repository sources and
+their subpath exports. npm, component, MachTable, and full-local modes use
+isolated caches without changing `package.json` or `bun.lock`. After a
+release, update the real npm versions and verify with plain `bun run dev` and
+`bun run build`. Production builds fail fast when a local-alias flag is present,
+so local paths cannot leak into release artifacts.
 
 </details>
 
@@ -231,19 +241,20 @@ To connect a backend, set `VITE_DEPLOYMENT_PROFILE=application`, `VITE_AUTH_MODE
 - **VueUse 14.4.0** - 🧰 On-demand composition utilities
 - **Naive UI 2.45.3** - 🎨 Component library with both beauty and performance
 - **@robot-admin/naive-ui-components** - 🧩 51+ business components, auto-import on demand
-- **UnoCSS 66.10** - ⚡ Atomic CSS, on-demand generation, minimal size
+- **MachTable 0.29.2** - 🧮 Standalone virtualized data grid, route-loaded through its Vue adapter; the demo reuses `C_ActionBar` and a data-driven feature panel for watermark, density, selection, clipboard, pagination, summaries, and status bars
+- **UnoCSS 66.9.1** - ⚡ Atomic CSS, on-demand generation, minimal size
 
 **⚙️ Build Tools**
 
-- **Bun 1.3.x** - 🚀 Fast package manager and JavaScript runtime
+- **Bun 1.4.2** - 🚀 High-performance JavaScript runtime and package manager
 - **Vite 8.2.2** - ⚡ Unified Rolldown build engine and fast hot updates
-- **Sass 1.104** - 🎨 Mature CSS preprocessor
+- **Sass 1.103** - 🎨 Mature CSS preprocessor
 
 **🔧 Development Tools**
 
 - **ESLint 10.9** - 📏 Code quality guardian
 - **Prettier 3.9** - ✨ Code formatting
-- **Oxlint 1.81** - 🦀 Ultra-fast Linter written in Rust
+- **Oxlint 1.52** - 🦀 Ultra-fast Linter written in Rust
 - **Bun Test 1.3** - 🧪 Test runtime aligned with the package manager
 
 **📊 Functional Components**
@@ -780,10 +791,10 @@ location / {
 
 **Published Plugins**
 
-- **[vite-console-plugin](https://www.npmjs.com/package/vite-console-plugin)** `v2.0.16` - Vite console beautification plugin
-- **[ts-type-cleaner](https://www.npmjs.com/package/ts-type-cleaner)** `v5.1.0` - TypeScript type analysis & cleanup tool
-- **[vite-plugin-preloader](https://www.npmjs.com/package/vite-plugin-preloader)** `v2.0.1` - Smart route preloader
-- **[git-branch-check-diff-commits](https://www.npmjs.com/package/git-branch-check-diff-commits)** `v1.3.0` - Branch diff checker
+- **[vite-console-plugin](https://www.npmjs.com/package/vite-console-plugin)** `v2.0.15` - Vite console beautification plugin
+- **[ts-type-cleaner](https://www.npmjs.com/package/ts-type-cleaner)** `v5.0.8` - TypeScript type analysis & cleanup tool
+- **[vite-plugin-preloader](https://www.npmjs.com/package/vite-plugin-preloader)** `v2.0.1` - Standalone route preloader (Robot Admin now uses Vite native warmup plus runtime intent prefetch instead)
+- **[git-branch-check-diff-commits](https://www.npmjs.com/package/git-branch-check-diff-commits)** `v1.2.2` - Branch diff checker
 
 </details>
 
@@ -832,7 +843,7 @@ location / {
 ### 🔧 Development Environment
 
 - **Node.js**: >= 22.18 (latest LTS recommended)
-- **Bun**: >= 1.3.14 (latest version recommended)
+- **Bun**: >= 1.4.2
 - **Memory**: >= 8GB RAM
 - **Storage**: >= 1GB available space
 - **OS**: Windows 10+, macOS 12+, Ubuntu 20.04+

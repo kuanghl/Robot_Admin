@@ -21,13 +21,6 @@ const buildConfig: BuildOptions = {
             test: /[\\/]node_modules[\\/](vue|vue-router|pinia)[\\/]/,
           },
           // 编辑器由各自的动态路由独立拆分，避免 Markdown 与富文本编辑器互相捆绑加载。
-          // Markdown 编辑器（v-md-editor 及其依赖 wangeditor）
-          {
-            name: 'editor-vendor',
-            // highlight.js 在启动阶段注册，不能与路由级富文本编辑器合并，
-            // 否则会把全部编辑器代码提升为首屏 preload。
-            test: /[\\/]node_modules[\\/](@kangc[\\/]v-md-editor|wangeditor)[\\/]/,
-          },
           // ECharts 可视化
           {
             name: 'echarts-vendor',

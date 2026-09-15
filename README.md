@@ -184,6 +184,9 @@ bun run dev
 # 开发相关
 bun run dev            # 开发环境启动
 bun run dev:banner     # 显式启用完整 Git 分支横幅（会增加启动等待）
+bun run dev:components # 直连本地 naive-ui-components 源码联调
+bun run dev:table      # 直连本地 MachTable、组件库与 request-core 源码
+bun run dev:local      # 直连本地全部包、组件库与 MachTable 源码
 bun run build          # 生产环境构建
 bun run build:test     # 测试环境构建
 bun run build:staging  # 预发布构建
@@ -200,11 +203,20 @@ bun run security:audit # 检查依赖安全公告
 
 # 类型检查
 bun run type-watch     # 监听模式类型检查
-bun run type-build     # 完整类型检查
+bun run type-build     # 完整类型检查；本地联调时优先校验本地包公开类型
+bun run type-build:installed # 仅按已安装 npm 版本复核发布态契约
 
 # 其他
 bun run commit         # 规范化提交（git cz）
 ```
+
+本地联调命令使用 Vite 精确 alias 直连各仓库源码及其子入口，并为 npm、组件库、
+MachTable 与全量联调使用隔离缓存，不修改
+`package.json` 或 `bun.lock`。正式发版后应更新真实 npm 版本并使用普通
+`bun run dev` / `bun run build` 验证；生产构建检测到本地 alias 标志会直接终止，
+防止本地路径进入发布产物。
+
+TypeScript 与 Vite 使用同一套本地包边界：Vite 直连源码以获得 HMR，类型检查读取对应仓库最新的 `dist/*.d.ts`，不会再误用 `node_modules` 中的旧声明。只有本地包公开 API 发生变化时才需要先在包仓库执行 build；样式和内部实现联调无需清理 Vite 缓存。正式发布并升级依赖后，使用 `bun run type-build:installed` 再做一次纯 npm 契约复核。
 
 </details>
 
@@ -234,19 +246,20 @@ bun run commit         # 规范化提交（git cz）
 - **VueUse 14.4.0** - 🧰 按需使用的组合式工具集
 - **Naive UI 2.45.3** - 🎨 颜值与性能并存的组件库
 - **@robot-admin/naive-ui-components** - 🧩 51+ 业务组件库，按需自动导入
-- **UnoCSS 66.10** - ⚡ 原子化CSS，按需生成，体积极小
+- **MachTable 0.29.2** - 🧮 独立虚拟化数据网格，通过 Vue 适配层按路由接入；演示页通过统一的 `C_ActionBar` 和数据驱动配置面板完整展示水印、密度、选择、剪贴板、分页、汇总与状态栏等能力
+- **UnoCSS 66.9.1** - ⚡ 原子化CSS，按需生成，体积极小
 
 **⚙️ 构建工具**
 
-- **Bun 1.3.x** - 🚀 性能怪兽，安装速度提升10倍
+- **Bun 1.4.2** - 🚀 高性能 JavaScript 运行时与包管理器
 - **Vite 8.2.2** - ⚡ Rolldown 统一构建引擎，构建速度提升 10-30x
-- **Sass 1.104** - 🎨 成熟的CSS预处理器
+- **Sass 1.103** - 🎨 成熟的CSS预处理器
 
 **🔧 开发工具**
 
 - **ESLint 10.9** - 📏 代码质量守护者
 - **Prettier 3.9** - ✨ 代码格式化
-- **Oxlint 1.81** - 🦀 Rust编写的超快Linter
+- **Oxlint 1.52** - 🦀 Rust编写的超快Linter
 - **Bun Test 1.3** - 🧪 与包管理器统一的测试运行时
 
 **📊 功能组件（via @robot-admin/naive-ui-components）**
@@ -777,13 +790,13 @@ location / {
 
 **已发布组件库**
 
-- **[@robot-admin/naive-ui-components](https://www.npmjs.com/package/@robot-admin/naive-ui-components)** `v0.11.8` - 基于 Naive UI 的 Vue 3 业务组件库（51+ 组件，按需导入）
+- **[@robot-admin/naive-ui-components](https://www.npmjs.com/package/@robot-admin/naive-ui-components)** `v0.12.1` - 基于 Naive UI 的 Vue 3 业务组件库（51+ 组件，按需导入）
 - **[@robot-admin/layout](https://www.npmjs.com/package/@robot-admin/layout)** `v3.2.1` - 6 种布局模式 + `/naive` 单入口 + Vue Headless 分层
-- **[@robot-admin/request-core](https://www.npmjs.com/package/@robot-admin/request-core)** `v0.5.0` - 实例化 Axios 编排、认证恢复与函数式 Headless CRUD
+- **[@robot-admin/request-core](https://www.npmjs.com/package/@robot-admin/request-core)** `v0.6.1` - 实例化 Axios 编排、认证恢复与函数式 Headless CRUD
 - **[@robot-admin/form-validate](https://www.npmjs.com/package/@robot-admin/form-validate)** `v3.4.2` - Naive UI / Element Plus 双框架企业级表单验证规则库
 - **[@robot-admin/directives](https://www.npmjs.com/package/@robot-admin/directives)** `v2.0.1` - 11 个安全、可回收的 Vue 指令
 - **[@robot-admin/file-utils](https://www.npmjs.com/package/@robot-admin/file-utils)** `v3.0.1` - Excel/ZIP/RFC 4180 CSV/可取消分片工具集
-- **[@robot-admin/theme](https://www.npmjs.com/package/@robot-admin/theme)** `v0.5.1` - 分层主题核心、Vue 状态管理与 Naive UI 适配
+- **[@robot-admin/theme](https://www.npmjs.com/package/@robot-admin/theme)** `v0.6.1` - 分层主题核心、Vue 状态管理与 Naive UI 适配
 - **[@robot-admin/git-standards](https://www.npmjs.com/package/@robot-admin/git-standards)** `v1.0.5` - 安全初始化、配置保护与双模块兼容的 Git 工程化标准
 
 **已发布周边工具**
@@ -794,10 +807,10 @@ location / {
 
 **已发布 npm 插件**
 
-- **[vite-console-plugin](https://www.npmjs.com/package/vite-console-plugin)** `v2.0.16` - Vite 启动台控制台美化与提示插件
-- **[ts-type-cleaner](https://www.npmjs.com/package/ts-type-cleaner)** `v5.1.0` - 智能 TypeScript 类型分析和清理工具
-- **[vite-plugin-preloader](https://www.npmjs.com/package/vite-plugin-preloader)** `v2.0.1` - 智能路由预加载插件
-- **[git-branch-check-diff-commits](https://www.npmjs.com/package/git-branch-check-diff-commits)** `v1.3.0` - Git 分支快速比对合并检查
+- **[vite-console-plugin](https://www.npmjs.com/package/vite-console-plugin)** `v2.0.15` - Vite 启动台控制台美化与提示插件
+- **[ts-type-cleaner](https://www.npmjs.com/package/ts-type-cleaner)** `v5.0.8` - 智能 TypeScript 类型分析和清理工具
+- **[vite-plugin-preloader](https://www.npmjs.com/package/vite-plugin-preloader)** `v2.0.1` - 独立路由预加载工具（Robot Admin 当前使用 Vite 原生 warmup + 运行时意图预取，未接入此插件）
+- **[git-branch-check-diff-commits](https://www.npmjs.com/package/git-branch-check-diff-commits)** `v1.2.2` - Git 分支快速比对合并检查
 - **[git-log-formatter](https://www.npmjs.com/package/git-log-formatter)** `v1.0.2` - Git log 格式化美化工具
 - **[standards-cli](https://www.npmjs.com/package/standards-cli)** `v1.0.13` - 前端工程化提交规范初始化工具
 - **[mgit-push](https://www.npmjs.com/package/mgit-push)** `v1.0.5` - 同时推送到多个 Git 平台
@@ -1090,10 +1103,6 @@ bun run type-build
 - ⚡ **按需加载**：大型页面、编辑器和文件能力改为路由级加载，降低首屏负担
 - 🧩 **组件工程化**：业务组件使用子路径入口和官方 Resolver
 - 🛡️ **生产就绪**：补齐远端数据契约、错误脱敏、安全头、质量及体积门禁
-- 🚀 **全量依赖升级**：Vue 3.5.42 / Vite 8.2.2 / TypeScript 5.8.3
-- 📦 **生态组件库升级**：`@robot-admin/naive-ui-components@0.11.8`、`layout@3.2.1`、`request-core@0.5.0`、`theme@0.5.1`
-- 🧰 **开发工具链升级**：ESLint 10.9 / oxlint 1.81 / vue-tsc 3.3 / UnoCSS 66.10 / Naive UI 2.45.3
-- 🧪 **环境变量架构**：迁移至 `envs/` 目录多环境配置 + `validateViteEnv` 构建期强校验
 
 <details>
 <summary><b>📆 查看历史版本记录 (v1.0 — v2.2)</b></summary>

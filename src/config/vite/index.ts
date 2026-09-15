@@ -11,7 +11,6 @@
 export { default as viteConsolePlugin } from './viteConsolePluginConfig.ts'
 export { default as viteAutoImportPlugin } from './viteAutoImportConfig.ts'
 export { default as viteComponentsPlugin } from './viteComponentsConfig.ts'
-export { default as vendorStyleCssFixPlugin } from './viteVendorCssFix.ts'
 export { default as resolveConfig } from './viteResolveConfig.ts'
 export { default as serverConfig } from './viteServerConfig.ts'
 export { default as buildConfig } from './viteBuildConfig.ts'

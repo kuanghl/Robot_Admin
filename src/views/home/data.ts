@@ -133,7 +133,7 @@ export const techLayers: TechLayer[] = [
     icon: '⚡',
     className: 'layer-build',
     tagType: 'success',
-    techs: ['Vite 7.0', 'Bun 1.x', 'Sass 1.87', 'Unplugin'],
+    techs: ['Vite 8.2', 'Bun 1.4', 'Sass 1.87', 'Unplugin'],
   },
   {
     name: '状态管理层',
@@ -172,7 +172,7 @@ export const projectMetrics = [
 export const ecosystemPackages = [
   {
     shortName: 'naive-ui-components',
-    version: '0.11.8',
+    version: '0.12.1',
     icon: 'mdi:puzzle-outline',
     color: '#6366f1',
     desc: '51+ 业务组件，按需导入，主题覆盖',
